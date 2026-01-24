@@ -15,13 +15,51 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.shortcuts import render
+from django.contrib import admin
 from django.urls import path
+from django.shortcuts import render
 
-def test(request):
+
+# ---------- Frontend-only Views ----------
+def landing(request):
     return render(request, "landing.html")
 
-urlpatterns = [
-    path("", test),
-]
+def login_view(request):
+    return render(request, "login.html")
 
+def register(request):
+    return render(request, "register.html")
+
+def dashboard(request):
+    return render(request, "dashboard.html")
+
+def email_verification(request):
+    return render(request, "verify_status.html", {"success": True})
+
+def resend_verification(request):
+    return render(request, "verify_status.html", {"success": False})
+
+
+def logout_view(request):
+    return render(request, "landing.html")
+
+
+# ---------- URL Patterns ----------
+urlpatterns = [
+    path("admin/", admin.site.urls),
+
+    # Public pages
+    path("", landing, name="landing"),
+    path("login/", login_view, name="login"),
+    path("register/", register, name="register"),
+
+    # Dashboard
+    path("dashboard/", dashboard, name="dashboard"),
+
+    # Email verification
+    path("verify-email/", email_verification, name="verify_email"),
+    path("resend-verification/", resend_verification, name="resend_verification"),
+
+    # Logout (temporary frontend-only)
+    path("logout/", logout_view, name="logout"),
+]

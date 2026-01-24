@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Crop Recommendation System - AI-powered crop suggestions based on soil and climate data">
+    <title>{% block title %}Crop Recommendation System{% endblock %}</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Chart.js CDN (for dashboard) -->
+    {% block head_scripts %}{% endblock %}
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <a href="{% url 'landing' %}" class="logo">
+                        <div class="logo-icon">🌾</div>
+                        <span>AgroGuide</span>
+                    </a>
+                    <nav class="nav-links">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="nav-link">Login</a>
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Get Started</a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 AgroGuide - Crop Recommendation System. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

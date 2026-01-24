@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - CropAdvisor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block head_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="welcome-message">Welcome back, <span>{{ user.username|default:"User" }}</span>!</h1>
+            <p class="dashboard-subtitle">Enter your soil and climate data to get personalized crop recommendations.</p>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column - Input Form & Results -->
+            <div class="dashboard-main">
+                <!-- Input Form Card -->
+                <div class="input-form-card">
+                    <h2 class="form-title">
+                        <span class="form-title-icon">🌱</span>
+                        Soil & Climate Parameters
+                    </h2>
+
+                    <form id="prediction-form" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="slider-grid">
+                            <!-- Nitrogen -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <label class="slider-label" for="nitrogen">Nitrogen (N)</label>
+                                    <span class="slider-value" id="nitrogen-value">50 kg/ha</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    id="nitrogen" 
+                                    name="nitrogen"
+                                    class="slider-input" 
+                                    min="0" 
+                                    max="140" 
+                                    value="50"
+                                    data-unit=" kg/ha"
+                                    data-default="50"
+                                >
+                                <div class="slider-range">
+                                    <span>0</span>
+                                    <span>140</span>
+                                </div>
+                            </div>
+
+                            <!-- Phosphorus -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <label class="slider-label" for="phosphorus">Phosphorus (P)</label>
+                                    <span class="slider-value" id="phosphorus-value">50 kg/ha</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    id="phosphorus" 
+                                    name="phosphorus"
+                                    class="slider-input" 
+                                    min="5" 
+                                    max="145" 
+                                    value="50"
+                                    data-unit=" kg/ha"
+                                    data-default="50"
+                                >
+                                <div class="slider-range">
+                                    <span>5</span>
+                                    <span>145</span>
+                                </div>
+                            </div>
+
+                            <!-- Potassium -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <label class="slider-label" for="potassium">Potassium (K)</label>
+                                    <span class="slider-value" id="potassium-value">50 kg/ha</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    id="potassium" 
+                                    name="potassium"
+                                    class="slider-input" 
+                                    min="5" 
+                                    max="205" 
+                                    value="50"
+                                    data-unit=" kg/ha"
+                                    data-default="50"
+                                >
+                                <div class="slider-range">
+                                    <span>5</span>
+                                    <span>205</span>
+                                </div>
+                            </div>
+
+                            <!-- Temperature -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <label class="slider-label" for="temperature">Temperature</label>
+                                    <span class="slider-value" id="temperature-value">25°C</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    id="temperature" 
+                                    name="temperature"
+                                    class="slider-input" 
+                                    min="8" 
+                                    max="44" 
+                                    value="25"
+                                    step="0.5"
+                                    data-unit="°C"
+                                    data-default="25"
+                                >
+                                <div class="slider-range">
+                                    <span>8°C</span>
+                                    <span>44°C</span>
+                                </div>
+                            </div>
+
+                            <!-- Humidity -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <label class="slider-label" for="humidity">Humidity</label>
+                                    <span class="slider-value" id="humidity-value">50%</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    id="humidity" 
+                                    name="humidity"
+                                    class="slider-input" 
+                                    min="14" 
+                                    max="100" 
+                                    value="50"
+                                    step="0.5"
+                                    data-unit="%"
+                                    data-default="50"
+                                >
+                                <div class="slider-range">
+                                    <span>14%</span>
+                                    <span>100%</span>
+                                </div>
+                            </div>
+
+                            <!-- Rainfall -->
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <label class="slider-label" for="rainfall">Rainfall</label>
+                                    <span class="slider-value" id="rainfall-value">100 mm</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    id="rainfall" 
+                                    name="rainfall"
+                                    class="slider-input" 
+                                    min="20" 
+                                    max="300" 
+                                    value="100"
+                                    data-unit=" mm"
+                                    data-default="100"
+                                >
+                                <div class="slider-range">
+                                    <span>20 mm</span>
+                                    <span>300 mm</span>
+                                </div>
+                            </div>
+
+                            <!-- Soil pH -->
+                            <div class="slider-group" style="grid-column: span 2;">
+                                <div class="slider-header">
+                                    <label class="slider-label" for="ph">Soil pH</label>
+                                    <span class="slider-value" id="ph-value">6.5</span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    id="ph" 
+                                    name="ph"
+                                    class="slider-input" 
+                                    min="3.5" 
+                                    max="10" 
+                                    value="6.5"
+                                    step="0.1"
+                                    data-unit=""
+                                    data-default="6.5"
+                                >
+                                <div class="slider-range">
+                                    <span>3.5 (Acidic)</span>
+                                    <span>10 (Alkaline)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-submit">
+                            <button type="submit" class="submit-btn">
+                                🌾 Get Crop Recommendation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results Card -->
+                <div class="results-card">
+                    <h2 class="results-title">
+                        <span>📊</span>
+                        Recommendation Results
+                    </h2>
+                    
+                    <div id="results-container">
+                        <div id="results-placeholder" class="results-placeholder">
+                            <div class="results-placeholder-icon">🌱</div>
+                            <p>Enter your soil and climate data, then click "Get Crop Recommendation" to see results.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Chart -->
+            <div class="dashboard-sidebar">
+                <div class="chart-card">
+                    <h2 class="chart-title">
+                        <span>📈</span>
+                        Feature Importance
+                    </h2>
+                    <div class="chart-container">
+                        <canvas id="feature-importance-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Table - Full Width -->
+            <div class="history-card">
+                <h2 class="history-title">
+                    <span>📜</span>
+                    Prediction History
+                </h2>
+                
+                <div class="table-wrapper">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Top Recommendation</th>
+                                <th>Confidence</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            {% if predictions %}
+                                {% for prediction in predictions %}
+                                <tr>
+                                    <td>{{ prediction.created_at|date:"M d, Y H:i" }}</td>
+                                    <td>{{ prediction.top_crop }}</td>
+                                    <td>{{ prediction.confidence }}%</td>
+                                    <td>
+                                        <button class="rerun-btn" data-values='{{ prediction.input_values|escapejs }}'>
+                                            Re-run
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="empty-history">
+                                    No prediction history yet. Make your first prediction above!
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/slider.js' %}"></script>
+<script src="{% static 'js/charts.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

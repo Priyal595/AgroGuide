@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Email Verification - CropAdvisor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+
+<style>
+.verify-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.verify-actions .btn {
+    width: 100%;
+}
+
+@media (min-width: 480px) {
+    .verify-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .verify-actions .btn {
+        width: auto;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+
+            <div class="verify-status">
+                {% if success %}
+                <!-- Success State -->
+                <div class="verify-icon success">✓</div>
+                <h1 class="verify-title">Email Verified Successfully!</h1>
+                <p class="verify-message">
+                    Your email has been verified. You can now login and start
+                    using the Crop Recommendation System.
+                </p>
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                    Continue to Login
+                </a>
+                {% else %}
+                <!-- Error State -->
+                <div class="verify-icon error">✕</div>
+                <h1 class="verify-title">Verification Failed</h1>
+                <p class="verify-message">
+                    {{ error_message|default:"The verification link is invalid or has expired. Please request a new verification email." }}
+                </p>
+
+                <div class="verify-actions">
+                    <a href="{% url 'resend_verification' %}" class="btn btn-primary">
+                        Resend Verification Email
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary">
+                        Back to Login
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
