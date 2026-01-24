@@ -7,7 +7,7 @@ AgroGuide is a web-based application that recommends the most suitable crops bas
 
 ## Project Structure
 
-![Project Folder Structure](static/images/folder_structure.png)
+![Project Folder Structure](images/folder_structure.png)
 ## Frontend Status (Completed)
 
 The following are already implemented and **should not be modified without discussion**:
