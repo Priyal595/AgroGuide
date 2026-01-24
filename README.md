@@ -7,26 +7,8 @@ AgroGuide is a web-based application that recommends the most suitable crops bas
 
 ## Project Structure
 
-AgroGuide/
-├── core/                 # Django project settings and root URLs
-├── accounts/             # Authentication (login, register, verify)
-├── predictions/          # Crop prediction logic & APIs
-├── templates/            # HTML templates
-│   ├── base.html
-│   ├── landing.html
-│   ├── login.html
-│   ├── register.html
-│   ├── verify_status.html
-│   └── dashboard.html
-├── static/
-│   ├── css/
-│   ├── js/
-│   └── images/
-└── README.md
-
----
-
-## Frontend Status (Completed ✅)
+![Project Folder Structure](static/images/folder_structure.png)
+## Frontend Status (Completed)
 
 The following are already implemented and **should not be modified without discussion**:
 
