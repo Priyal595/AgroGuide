@@ -99,7 +99,7 @@ def dashboard(request):
     return render(request, "dashboard.html")
 
 
-def verify_email(request, token=None):
+def verify_email(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
