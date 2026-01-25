@@ -124,3 +124,12 @@ STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
+
+# Auth redirects
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'landing'
+
+# Email (development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
