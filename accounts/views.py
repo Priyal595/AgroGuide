@@ -90,7 +90,7 @@ def register(request):
             recipient_list=[email],
         )
 
-        return render(request, "verify_status.html", {"success": False})
+        return render(request, "verify_status.html", {"status": "pending"})
 
     return render(request, "register.html")
 
@@ -109,8 +109,8 @@ def verify_email(request, uidb64, token):
     if user and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        return render(request, "verify_status.html", {"success": True})
-    return render(request, "verify_status.html", {"success": False})
+        return render(request, "verify_status.html", {"status": "success"})
+    return render(request, "verify_status.html", {"status": "failed"})
 
 
 def logout_view(request):
@@ -119,4 +119,4 @@ def logout_view(request):
 
 def resend_verification(request):
     # For now, just show "check your email" again
-    return render(request, "verify_status.html", {"success": False})
+    return render(request, "verify_status.html", {"status": "pending"})
