@@ -3,6 +3,8 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from .models import Prediction
+
 
 
 @csrf_exempt            
@@ -71,6 +73,18 @@ def predict_crop(request):
         },
     }
 
+    
+    Prediction.objects.create(
+        user=request.user,
+        nitrogen=data["nitrogen"],
+        phosphorus=data["phosphorus"],
+        potassium=data["potassium"],
+        temperature=data["temperature"],
+        humidity=data["humidity"],
+        rainfall=data["rainfall"],
+        ph=data["ph"],
+        result=response
+    )
     return JsonResponse(response)
 
 
