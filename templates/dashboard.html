@@ -255,26 +255,11 @@
                             </tr>
                         </thead>
                         <tbody id="history-body">
-                            {% if predictions %}
-                                {% for prediction in predictions %}
-                                <tr>
-                                    <td>{{ prediction.created_at|date:"M d, Y H:i" }}</td>
-                                    <td>{{ prediction.top_crop }}</td>
-                                    <td>{{ prediction.confidence }}%</td>
-                                    <td>
-                                        <button class="rerun-btn" data-values='{{ prediction.input_values|escapejs }}'>
-                                            Re-run
-                                        </button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            {% else %}
                             <tr>
                                 <td colspan="4" class="empty-history">
-                                    No prediction history yet. Make your first prediction above!
+                                    Loading prediction history...
                                 </td>
                             </tr>
-                            {% endif %}
                         </tbody>
                     </table>
                 </div>

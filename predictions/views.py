@@ -88,4 +88,34 @@ def predict_crop(request):
     return JsonResponse(response)
 
 
+@login_required
+def prediction_history(request):
+    if request.method != "GET":
+        return JsonResponse(
+            {"error": "Only GET method is allowed"},
+            status=405
+        )
+
+    predictions = Prediction.objects.filter(
+        user=request.user
+    ).order_by("-created_at")
+
+    data = []
+    for p in predictions:
+        data.append({
+            "id": p.id,
+            "inputs": {
+                "nitrogen": p.nitrogen,
+                "phosphorus": p.phosphorus,
+                "potassium": p.potassium,
+                "temperature": p.temperature,
+                "humidity": p.humidity,
+                "rainfall": p.rainfall,
+                "ph": p.ph,
+            },
+            "result": p.result,
+            "created_at": p.created_at.isoformat(),
+        })
+
+    return JsonResponse({"history": data})
 

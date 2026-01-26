@@ -6,6 +6,9 @@
 /**
  * Initialize dashboard when DOM is ready
  */
+
+console.log("dashboard.js loaded");
+
 document.addEventListener('DOMContentLoaded', function() {
   initializeDashboard();
 });
@@ -22,6 +25,7 @@ function initializeDashboard() {
   
   // Initialize re-run buttons in history
   initializeRerunButtons();
+  loadPredictionHistory();
 }
 
 /**
@@ -244,3 +248,50 @@ function addToHistory(inputData, resultData) {
     populateFormFromHistory(inputData);
   });
 }
+
+function loadPredictionHistory() {
+    console.log("loadPredictionHistory called");
+
+    fetch("/api/history/", {
+        credentials: "same-origin"
+    })
+        .then(res => {
+            console.log("history response status:", res.status);
+            return res.json();
+        })
+        .then(data => {
+            console.log("history data:", data);
+
+            const tbody = document.getElementById("history-body");
+            tbody.innerHTML = "";
+
+            if (!data.history || data.history.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-history">
+                            No prediction history yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            data.history.forEach(item => {
+                const top = item.result.predictions[0];
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${new Date(item.created_at).toLocaleString()}</td>
+                    <td>${top.name}</td>
+                    <td>${(top.score * 100).toFixed(1)}%</td>
+                    <td><button class="rerun-btn" disabled>Re-run</button></td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        })
+        .catch(err => {
+            console.error("history fetch error:", err);
+        });
+}
+
