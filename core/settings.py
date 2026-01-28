@@ -133,7 +133,13 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'landing'
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+USE_CONSOLE_EMAIL = os.getenv("USE_CONSOLE_EMAIL") == "True"
+
+if USE_CONSOLE_EMAIL:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
 
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
