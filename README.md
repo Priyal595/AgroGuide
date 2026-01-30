@@ -1,5 +1,5 @@
 # AgroGuide 🌾  
-AI-Powered Crop Recommendation System
+Crop Recommendation System
 
 AgroGuide is a web-based application that recommends the most suitable crops based on soil nutrients and climatic conditions using machine learning.
 
