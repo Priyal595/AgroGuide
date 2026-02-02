@@ -1,4 +1,4 @@
-# AgroGuide 🌾  
+# AgroGuide
 Crop Recommendation System
 
 AgroGuide is a web-based application that recommends the most suitable crops based on soil nutrients and climatic conditions using machine learning.
@@ -9,7 +9,7 @@ AgroGuide is a web-based application that recommends the most suitable crops bas
 
 ![Project Folder Structure](images/folder_structure.png)
 
-## Current Project Status ✅
+## Current Project Status
 
 ### Completed
 - Frontend UI (All pages)
