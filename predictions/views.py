@@ -61,11 +61,39 @@ def predict_crop(request):
         "ph": data["ph"],
     }
 
+    # ml_result = ml_predict_crop(input_data)
+
+    # # -------------------------------
+    # # SAVE TO DATABASE
+    # # -------------------------------
+    # Prediction.objects.create(
+    #     user=request.user,
+    #     nitrogen=data["nitrogen"],
+    #     phosphorus=data["phosphorus"],
+    #     potassium=data["potassium"],
+    #     temperature=data["temperature"],
+    #     humidity=data["humidity"],
+    #     rainfall=data["rainfall"],
+    #     ph=data["ph"],
+    #     result=ml_result
+    # )
+
+    # # -------------------------------
+    # # RETURN RESPONSE
+    # # -------------------------------
+    # return JsonResponse({
+    #     "predictions": ml_result["top_3_crops"],
+    #     "feature_importance": ml_result["feature_importance"]
+    # })
     ml_result = ml_predict_crop(input_data)
 
-    # -------------------------------
-    # SAVE TO DATABASE
-    # -------------------------------
+    # Unified response structure
+    response_data = {
+        "predictions": ml_result["top_3_crops"],
+        "feature_importance": ml_result["feature_importance"],
+    }
+
+    # SAME structure to DB
     Prediction.objects.create(
         user=request.user,
         nitrogen=data["nitrogen"],
@@ -75,16 +103,12 @@ def predict_crop(request):
         humidity=data["humidity"],
         rainfall=data["rainfall"],
         ph=data["ph"],
-        result=ml_result
+        result=response_data
     )
 
-    # -------------------------------
-    # RETURN RESPONSE
-    # -------------------------------
-    return JsonResponse({
-        "predictions": ml_result["top_3_crops"],
-        "feature_importance": ml_result["feature_importance"]
-    })
+    # Return SAME structure to frontend
+    return JsonResponse(response_data)
+
 
 
 @login_required
