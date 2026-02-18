@@ -7,6 +7,9 @@ from django.contrib.auth.decorators import login_required
 from .models import Prediction
 from ml.predictor import predict_crop as ml_predict_crop
 
+from collections import Counter
+from django.db.models import Avg
+
 
 @csrf_exempt
 @login_required
@@ -88,10 +91,24 @@ def predict_crop(request):
     ml_result = ml_predict_crop(input_data)
 
     # Unified response structure
+    # response_data = {
+    #     "predictions": ml_result["top_3_crops"],
+    #     "feature_importance": ml_result["feature_importance"],
+    # }
+    raw_importance = ml_result["feature_importance"]
+
+    labels = [item["feature"] for item in raw_importance]
+    values = [item["importance"] for item in raw_importance]
+
     response_data = {
         "predictions": ml_result["top_3_crops"],
-        "feature_importance": ml_result["feature_importance"],
+        "feature_importance": {
+            "labels": labels,
+            "values": values
+        },
     }
+
+    
 
     # SAME structure to DB
     Prediction.objects.create(
@@ -141,3 +158,85 @@ def prediction_history(request):
         })
 
     return JsonResponse({"history": data})
+
+
+
+@login_required
+def user_insights(request):
+    if request.method != "GET":
+        return JsonResponse(
+            {"error": "Only GET method is allowed"},
+            status=405
+        )
+
+    predictions = Prediction.objects.filter(user=request.user)
+
+    if not predictions.exists():
+        return JsonResponse({
+            "total_predictions": 0,
+            "most_recommended_crop": None,
+            "crop_frequency": {},
+            "confidence_distribution": {
+                "high": 0,
+                "medium": 0,
+                "low": 0
+            },
+            "average_conditions": {}
+        })
+
+    # 1️⃣ Total predictions
+    total_predictions = predictions.count()
+
+    # 2️⃣ Crop frequency
+    top_crops = [
+        p.result["predictions"][0]["crop"]
+        for p in predictions
+    ]
+    crop_counter = Counter(top_crops)
+    crop_frequency = dict(crop_counter)
+
+    most_recommended_crop = crop_counter.most_common(1)[0][0]
+
+    # 3️⃣ Confidence distribution
+    high = 0
+    medium = 0
+    low = 0
+
+    for p in predictions:
+        confidence = p.result["predictions"][0]["confidence"]
+
+        if confidence >= 0.7:
+            high += 1
+        elif confidence >= 0.4:
+            medium += 1
+        else:
+            low += 1
+
+    confidence_distribution = {
+        "high": high,
+        "medium": medium,
+        "low": low
+    }
+
+    # 4️⃣ Average environmental conditions
+    averages = predictions.aggregate(
+        avg_rainfall=Avg("rainfall"),
+        avg_temperature=Avg("temperature"),
+        avg_ph=Avg("ph"),
+        avg_humidity=Avg("humidity"),
+    )
+
+    average_conditions = {
+        "rainfall": round(averages["avg_rainfall"], 2),
+        "temperature": round(averages["avg_temperature"], 2),
+        "ph": round(averages["avg_ph"], 2),
+        "humidity": round(averages["avg_humidity"], 2),
+    }
+
+    return JsonResponse({
+        "total_predictions": total_predictions,
+        "most_recommended_crop": most_recommended_crop,
+        "crop_frequency": crop_frequency,
+        "confidence_distribution": confidence_distribution,
+        "average_conditions": average_conditions,
+    })
