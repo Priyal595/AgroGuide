@@ -237,7 +237,34 @@
                 </div>
             </div>
 
-            <!-- History Table - Full Width -->
+            {% comment %} <!-- History Table - Full Width -->
+            <div class="history-card">
+                <h2 class="history-title">
+                    <span>📜</span>
+                    Prediction History
+                </h2>
+                
+                <div class="table-wrapper">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Top Recommendation</th>
+                                <th>Confidence</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <tr>
+                                <td colspan="4" class="empty-history">
+                                    Loading prediction history...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> {% endcomment %}
+                        <!-- History Table - Full Width -->
             <div class="history-card">
                 <h2 class="history-title">
                     <span>📜</span>
@@ -264,6 +291,39 @@
                     </table>
                 </div>
             </div>
+
+            <!-- ============================= -->
+            <!-- NEW: Insights Section -->
+            <!-- ============================= -->
+            <div class="history-card">
+                <h2 class="history-title">
+                    <span>📊</span>
+                    My Crop Insights
+                </h2>
+
+                <!-- Summary -->
+                <div id="insights-summary" class="insights-summary">
+                    Loading insights...
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-grid" style="margin-top: 20px;">
+                    <div class="chart-card">
+                        <h3>🌾 Crop Frequency</h3>
+                        <div class="chart-container">
+                            <canvas id="cropFrequencyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>🎯 Confidence Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="confidenceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
