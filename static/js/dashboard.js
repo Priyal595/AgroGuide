@@ -2,20 +2,36 @@
    DASHBOARD.JS - Dashboard Functionality
    =================================== */
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   initializeDashboard();
-// });
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Dashboard JS Loaded");
   initializeDashboard();
 });
 
+function getCSRFToken() {
+  const name = "csrftoken";
+  const cookies = document.cookie.split(";");
+
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith(name + "=")) {
+      return cookie.substring(name.length + 1);
+    }
+  }
+  return null;
+}
+
+
 function initializeDashboard() {
   const form = document.getElementById("prediction-form");
   if (form) {
     form.addEventListener("submit", handleFormSubmit);
   }
+  const resetBtn = document.getElementById("reset-history-btn");
+  if (resetBtn) {
+    resetBtn.addEventListener("click", resetAllHistory);
+  }
+
   loadPredictionHistory();
   loadInsights();
 }
@@ -50,7 +66,7 @@ function handleFormSubmit(e) {
     .then((data) => {
       displayResults(data);
 
-      // 🔥 UPDATE FEATURE IMPORTANCE CHART
+      
       if (data.feature_importance) {
         updateFeatureChart(data.feature_importance);
       }
@@ -98,6 +114,9 @@ function displayResults(data) {
 
   html += `</div>`;
 
+  // -------------------------------
+  // EXPLANATION SECTION
+  // -------------------------------
   if (data.explanation) {
     html += `
       <div class="explanation-section">
@@ -107,8 +126,41 @@ function displayResults(data) {
     `;
   }
 
+  // -------------------------------
+  // SUITABILITY ANALYSIS SECTION
+  // -------------------------------
+  if (data.suitability_analysis) {
+    const suitability = data.suitability_analysis;
+
+    html += `
+      <div class="suitability-card">
+        <h4>📊 Soil Suitability Analysis</h4>
+    `;
+
+    Object.keys(suitability).forEach(feature => {
+      const status = suitability[feature].status;
+      const value = suitability[feature].value;
+
+      let color = "#28a745"; 
+      if (status === "moderate") color = "#ffc107";
+      if (status === "poor") color = "#dc3545";
+
+      html += `
+        <div class="suitability-row">
+          <span>${feature.toUpperCase()} (${value})</span>
+          <span style="color:${color}; font-weight:600;">
+            ${status.toUpperCase()}
+          </span>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+  }
+
   container.innerHTML = html;
 }
+
 
 /* ===============================
    LOADING STATE
@@ -160,6 +212,7 @@ function loadPredictionHistory() {
       }
 
       data.history.forEach((item) => {
+        
         if (!item.result || !item.result.predictions) return;
 
         const top = item.result.predictions[0];
@@ -169,11 +222,24 @@ function loadPredictionHistory() {
           <td>${new Date(item.created_at).toLocaleString()}</td>
           <td>${top.crop}</td>
           <td>${(top.confidence * 100).toFixed(1)}%</td>
-          <td><button disabled>Re-run</button></td>
+          <td>
+            <button class="btn-small rerun-btn">Re-run</button>
+            <button class="btn-small btn-danger delete-btn">Delete</button>
+          </td>
         `;
+
+        // Attach listeners properly
+        row.querySelector(".rerun-btn").addEventListener("click", () => {
+          rerunPrediction(item.inputs);
+        });
+
+        row.querySelector(".delete-btn").addEventListener("click", () => {
+          deletePrediction(item.id);
+        });
 
         tbody.appendChild(row);
       });
+
     })
     .catch((err) => {
       console.error("History load error:", err);
@@ -269,3 +335,63 @@ function renderConfidenceChart(confidenceData) {
     }
   });
 }
+
+function rerunPrediction(inputs) {
+  // Set slider values
+  Object.keys(inputs).forEach((key) => {
+    const slider = document.getElementById(key);
+    if (slider) {
+      slider.value = inputs[key];
+
+      // Update displayed value
+      const valueDisplay = document.getElementById(`${key}-value`);
+      if (valueDisplay) {
+        const unit = slider.dataset.unit || "";
+        valueDisplay.textContent = inputs[key] + unit;
+      }
+    }
+  });
+
+  // Scroll to form
+  document.getElementById("prediction-form")
+    .scrollIntoView({ behavior: "smooth" });
+
+  // Trigger prediction automatically
+  document.getElementById("prediction-form")
+    .dispatchEvent(new Event("submit"));
+}
+
+function deletePrediction(id) {
+  fetch(`/api/history/${id}/`, {
+    method: "DELETE",
+    headers: {
+      "X-CSRFToken": getCSRFToken(),
+    },
+    credentials: "same-origin",
+  })
+    .then((res) => res.json())
+    .then(() => {
+      loadPredictionHistory();
+      loadInsights();
+    })
+    .catch((err) => console.error("Delete error:", err));
+}
+
+function resetAllHistory() {
+  if (!confirm("Are you sure you want to delete all history?")) return;
+
+  fetch("/api/history/reset/", {
+    method: "DELETE",
+    headers: {
+      "X-CSRFToken": getCSRFToken(),
+    },
+    credentials: "same-origin",
+  })
+    .then((res) => res.json())
+    .then(() => {
+      loadPredictionHistory();
+      loadInsights();
+    })
+    .catch((err) => console.error("Reset error:", err));
+}
+

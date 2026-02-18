@@ -10,6 +10,32 @@ from ml.predictor import predict_crop as ml_predict_crop
 from collections import Counter
 from django.db.models import Avg
 
+from ml.explainer import generate_explanation
+from ml.suitability import analyze_suitability
+
+from django.views.decorators.http import require_http_methods
+from django.shortcuts import get_object_or_404
+@require_http_methods(["DELETE"])
+@login_required
+def delete_prediction(request, pk):
+    prediction = get_object_or_404(
+        Prediction,
+        id=pk,
+        user=request.user
+    )
+    prediction.delete()
+
+    return JsonResponse({"message": "Deleted successfully"})
+
+
+@require_http_methods(["DELETE"])
+@login_required
+def reset_history(request):
+    Prediction.objects.filter(user=request.user).delete()
+    return JsonResponse({"message": "All history cleared"})
+
+
+
 
 @csrf_exempt
 @login_required
@@ -84,28 +110,47 @@ def predict_crop(request):
     # # -------------------------------
     # # RETURN RESPONSE
     # # -------------------------------
-    # return JsonResponse({
-    #     "predictions": ml_result["top_3_crops"],
-    #     "feature_importance": ml_result["feature_importance"]
-    # })
+    
     ml_result = ml_predict_crop(input_data)
 
-    # Unified response structure
-    # response_data = {
-    #     "predictions": ml_result["top_3_crops"],
-    #     "feature_importance": ml_result["feature_importance"],
-    # }
+    # -------------------------------
+    # FORMAT FEATURE IMPORTANCE
+    # -------------------------------
     raw_importance = ml_result["feature_importance"]
 
     labels = [item["feature"] for item in raw_importance]
     values = [item["importance"] for item in raw_importance]
 
+    # -------------------------------
+    # GENERATE EXPLANATION
+    # -------------------------------
+    from ml.explainer import generate_explanation
+
+    top_crop = ml_result["top_3_crops"][0]["crop"]
+
+    explanation = generate_explanation(
+        input_data,
+        top_crop,
+        raw_importance
+    )
+    # -------------------------------
+    # GENERATE SUITABILITY ANALYSIS
+    # -------------------------------
+
+    suitability_analysis = analyze_suitability(input_data)
+
+
+    # -------------------------------
+    # FINAL RESPONSE STRUCTURE
+    # -------------------------------
     response_data = {
         "predictions": ml_result["top_3_crops"],
         "feature_importance": {
             "labels": labels,
             "values": values
         },
+        "explanation": explanation,
+        "suitability_analysis": suitability_analysis
     }
 
     
