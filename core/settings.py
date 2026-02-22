@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
 CREATED_APPS = [
     'accounts',
     'predictions',
+    'weather',
 ]
 
 INSTALLED_APPS += CREATED_APPS
