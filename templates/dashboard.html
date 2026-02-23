@@ -30,6 +30,12 @@
                         <span class="form-title-icon">🌱</span>
                         Soil & Climate Parameters
                     </h2>
+                    
+                    <div class="form-helper-text">
+                        🌤 Climate values (Temperature, Humidity, Rainfall) are auto-detected.
+                        <br>
+                        🌾 Please adjust soil parameters (N, P, K, pH) based on your soil test report for accurate recommendations.
+                    </div>
 
                     <form id="prediction-form" method="POST">
                         {% csrf_token %}

@@ -477,3 +477,13 @@
 .reset-btn:hover {
   opacity: 0.9;
 }
+
+
+.form-helper-text {
+  background-color: #e9f7ef;
+  border-left: 4px solid #28a745;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}

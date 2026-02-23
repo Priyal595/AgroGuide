@@ -34,6 +34,8 @@ function initializeDashboard() {
 
   loadPredictionHistory();
   loadInsights();
+
+  autoFillWeather(); 
 }
 
 /* ===============================
@@ -395,3 +397,56 @@ function resetAllHistory() {
     .catch((err) => console.error("Reset error:", err));
 }
 
+
+/* ===============================
+   AUTO WEATHER FILL
+   =============================== */
+
+function autoFillWeather() {
+
+  if (!navigator.geolocation) {
+    console.log("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      try {
+        const response = await fetch(`/api/weather/?lat=${lat}&lon=${lon}`, {
+          credentials: "same-origin"
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          console.error("Weather error:", data.error);
+          return;
+        }
+
+        // Update slider values
+        document.getElementById("temperature").value = data.temperature;
+        document.getElementById("humidity").value = data.humidity;
+        document.getElementById("rainfall").value = data.rainfall;
+
+        // Update displayed labels
+        document.getElementById("temperature-value").textContent =
+          data.temperature + "°C";
+
+        document.getElementById("humidity-value").textContent =
+          data.humidity + "%";
+
+        document.getElementById("rainfall-value").textContent =
+          data.rainfall + " mm";
+
+      } catch (error) {
+        console.error("Failed to fetch weather:", error);
+      }
+    },
+    (error) => {
+      console.log("Location permission denied or unavailable.");
+    }
+  );
+}
