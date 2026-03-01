@@ -34,7 +34,7 @@ function initializeDashboard() {
 
   loadPredictionHistory();
   loadInsights();
-
+   loadAgroNews(); 
   autoFillWeather(); 
 }
 
@@ -262,6 +262,50 @@ function loadInsights() {
     });
 }
 
+/* ===============================
+   LOAD AGRO NEWS
+   =============================== */
+
+function loadAgroNews() {
+  fetch("/api/news/", { credentials: "same-origin" })
+    .then(res => res.json())
+    .then(data => {
+
+      const container = document.getElementById("news-container");
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      if (!data.news || data.news.length === 0) {
+        container.innerHTML = "<p>No agriculture news available.</p>";
+        return;
+      }
+
+      data.news.forEach(article => {
+        const card = document.createElement("div");
+        card.classList.add("news-card");
+
+        card.innerHTML = `
+          <img src="${article.image || ''}" class="news-image"/>
+          <div class="news-content">
+            <h4>${article.title}</h4>
+            <p>${article.description || ''}</p>
+            <small>${article.source}</small>
+            <a href="${article.url}" target="_blank">Read More</a>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+      currentNewsIndex = 0;
+      updateNewsSlider();
+
+    })
+    .catch(err => {
+      console.error("News error:", err);
+    });
+}
+
 
 function renderInsightsSummary(data) {
   const container = document.getElementById("insights-summary");
@@ -449,4 +493,36 @@ function autoFillWeather() {
       console.log("Location permission denied or unavailable.");
     }
   );
+}
+/* ===============================
+   NEWS CAROUSEL LOGIC
+   =============================== */
+
+let currentNewsIndex = 0;
+
+function updateNewsSlider() {
+  const slider = document.getElementById("news-container");
+  if (!slider) return;
+
+  slider.style.transform = `translateX(-${currentNewsIndex * 100}%)`;
+}
+
+function nextNews() {
+  const slider = document.getElementById("news-container");
+  if (!slider) return;
+
+  const total = slider.children.length;
+  currentNewsIndex = (currentNewsIndex + 1) % total;
+  updateNewsSlider();
+}
+
+function prevNews() {
+  const slider = document.getElementById("news-container");
+  if (!slider) return;
+
+  const total = slider.children.length;
+  currentNewsIndex =
+    (currentNewsIndex - 1 + total) % total;
+
+  updateNewsSlider();
 }

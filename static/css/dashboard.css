@@ -487,3 +487,59 @@
   font-size: 0.9rem;
   border-radius: 6px;
 }
+/* ===========================
+   NEWS CAROUSEL
+   =========================== */
+
+.agro-news-section {
+    margin: 30px 0;
+}
+
+.news-carousel {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.news-slider-wrapper {
+    overflow: hidden;
+    width: 100%;
+}
+
+.news-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.news-card {
+    min-width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.news-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.carousel-btn {
+    background: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 10px 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    margin: 0 10px;
+}
+
+.carousel-btn:hover {
+    background: #388E3C;
+}

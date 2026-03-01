@@ -19,6 +19,24 @@
             <h1 class="welcome-message">Welcome back, <span>{{ user.username|default:"User" }}</span>!</h1>
             <p class="dashboard-subtitle">Enter your soil and climate data to get personalized crop recommendations.</p>
         </div>
+        <!-- ============================= -->
+<!-- Agriculture News Carousel -->
+<!-- ============================= -->
+        <div class="agro-news-section">
+            <h2 class="news-title">Latest Agriculture News</h2>
+
+            <div class="news-carousel">
+                <button class="carousel-btn left-btn" onclick="prevNews()">❮</button>
+
+                <div class="news-slider-wrapper">
+                    <div id="news-container" class="news-slider">
+                        Loading agriculture news...
+                    </div>
+                </div>
+
+                <button class="carousel-btn right-btn" onclick="nextNews()">❯</button>
+            </div>
+        </div>
 
         <!-- Dashboard Grid -->
         <div class="dashboard-grid">
@@ -213,6 +231,7 @@
                         </div>
                     </form>
                 </div>
+
 
                 <!-- Results Card -->
                 <div class="results-card">
