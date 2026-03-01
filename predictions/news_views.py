@@ -7,23 +7,28 @@ NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
 def agro_news(request):
     try:
+        if not NEWS_API_KEY:
+            return JsonResponse({"error": "API key not configured"}, status=500)
+
+        from django.core.cache import cache
+        cached_news = cache.get("agro_news")
+        if cached_news:
+            return JsonResponse(cached_news)
+
         from_date = (datetime.utcnow() - timedelta(days=7)).strftime("%Y-%m-%d")
 
-        #Using AND logic to ensure climate/weather terms 
-        # are tied to agriculture specifically.
         query = (
-            "(agriculture OR farming OR agronomy OR 'crop yield' OR livestock OR "
-            "horticulture OR 'agri-tech' OR 'sustainable farming' OR irrigation) "
-            "AND (farmer OR crops OR harvest OR soil OR agribusiness)"
+            "(agriculture OR farming OR agronomy OR crop OR livestock OR irrigation) "
+            "AND (farmer OR crops OR soil OR harvest OR yield)"
         )
 
         url = "https://newsapi.org/v2/everything"
         params = {
             "q": query,
             "from": from_date,
-            "sortBy": "relevance", # Changed from popularity to prioritize your keywords
+            "sortBy": "publishedAt",
             "language": "en",
-            "pageSize": 40,        # Fetch more initially to filter them down
+            "pageSize": 30,
             "apiKey": NEWS_API_KEY
         }
 
@@ -33,31 +38,31 @@ def agro_news(request):
         if data.get("status") != "ok":
             return JsonResponse({"error": data.get("message")}, status=400)
 
-        # We define "Must-Have" keywords to exclude generic climate/political news
-        primary_sector_keywords = [
-            'farm', 'crop', 'soil', 'livestock', 'agriculture', 'agri', 
-            'harvest', 'irrigation', 'yield', 'cultivation', 'cattle'
+        primary_keywords = [
+            'farmer', 'crop', 'soil', 'livestock',
+            'harvest', 'irrigation', 'yield'
         ]
-        
+
         filtered_articles = []
         for article in data.get("articles", []):
             title = (article.get("title") or "").lower()
             desc = (article.get("description") or "").lower()
             content = title + " " + desc
 
-            # Check if at least one primary sector keyword is in the title or description
-            if any(word in content for word in primary_sector_keywords):
+            if any(word in content for word in primary_keywords):
                 filtered_articles.append({
                     "title": article.get("title"),
                     "description": article.get("description") or "",
                     "url": article.get("url"),
-                    "image": article.get("urlToImage") or "",
+                    "image": article.get("urlToImage") or "https://via.placeholder.com/400x250",
                     "source": article.get("source", {}).get("name"),
                     "published": article.get("publishedAt"),
                 })
 
-        # Return the top 6 most relevant filtered results
-        return JsonResponse({"news": filtered_articles[:6]})
+        result = {"news": filtered_articles[:6]}
+        cache.set("agro_news", result, timeout=3600)
+
+        return JsonResponse(result)
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
