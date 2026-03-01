@@ -46,6 +46,7 @@ CREATED_APPS = [
     'accounts',
     'predictions',
     'weather',
+    'assistant',
 ]
 
 INSTALLED_APPS += CREATED_APPS
