@@ -236,7 +236,7 @@
                 
                     <div class="assistant-input-section">
                         <input type="text" id="assistant-query" placeholder="Ask about your crop, diseases, irrigation..." />
-                        <button id="ask-assistant-btn">Ask</button>
+                        <button type="button" id="ask-assistant-btn">Ask</button>
                     </div>
                 
                     <div id="assistant-response" class="assistant-response">
@@ -336,5 +336,5 @@
 {% block extra_js %}
 <script src="{% static 'js/slider.js' %}"></script>
 <script src="{% static 'js/charts.js' %}"></script>
-<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}" defer></script>
 {% endblock %}

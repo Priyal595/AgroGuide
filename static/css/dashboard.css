@@ -487,3 +487,61 @@
   font-size: 0.9rem;
   border-radius: 6px;
 }
+
+/* ===============================
+   🤖 Farmer AI Assistant Section
+   =============================== */
+
+.assistant-card {
+  margin-top: 25px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+}
+
+.assistant-input-section {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+#assistant-query {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: border 0.2s ease;
+}
+
+#assistant-query:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+#ask-assistant-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#ask-assistant-btn:hover {
+  background-color: #43a047;
+}
+
+.assistant-response {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8fdf8;
+  border-radius: 10px;
+  border: 1px solid #e2f3e2;
+  font-size: 14px;
+  line-height: 1.6;
+}
