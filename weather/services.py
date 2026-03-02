@@ -19,7 +19,7 @@ def fetch_weather_by_city(city):
     response = requests.get(url, params=params)
 
     if response.status_code != 200:
-        raise Exception("Failed to fetch weather data")
+        raise Exception(response.text)
 
     data = response.json()
 
