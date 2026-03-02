@@ -36,7 +36,69 @@ function initializeDashboard() {
   loadInsights();
 
   autoFillWeather(); 
+
+
+  const askBtn = document.getElementById("ask-assistant-btn");
+  const queryInput = document.getElementById("assistant-query");
+  const responseDiv = document.getElementById("assistant-response");
+
+  if (askBtn) {
+    askBtn.addEventListener("click", function () {
+      console.log("Assistant button clicked");
+
+      const query = queryInput.value.trim();
+
+      if (!query) {
+        responseDiv.innerHTML = "<p>Please enter a question.</p>";
+        return;
+      }
+
+      responseDiv.innerHTML = "<p>Getting advisory...</p>";
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          fetch("/api/assistant/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify({
+              query: query,
+              lat: lat,
+              lon: lon
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+
+            if (data.error) {
+              responseDiv.innerHTML = `<p>${data.error}</p>`;
+              return;
+            }
+
+            responseDiv.innerHTML = `
+              <div>
+                <strong>🌾 Crop:</strong> ${data.crop || "-"} <br>
+                <strong>📘 Section:</strong> ${data.section || "-"} <br>
+                <strong>📖 Info:</strong><br> ${data.content || "-"} <br><br>
+                <strong>🌡 Temperature:</strong> ${data.current_temperature ?? "-"} °C <br>
+                <strong>🧠 Advisory:</strong> ${data.advisory || "-"}
+              </div>
+            `;
+          });
+
+        });
+      }
+
+    });
+  }
 }
+
 
 /* ===============================
    HANDLE FORM SUBMISSION
@@ -449,4 +511,69 @@ function autoFillWeather() {
       console.log("Location permission denied or unavailable.");
     }
   );
+}
+
+
+// ===============================
+// 🤖 Farmer AI Assistant
+// ===============================
+
+const askBtn = document.getElementById("ask-assistant-btn");
+const queryInput = document.getElementById("assistant-query");
+const responseDiv = document.getElementById("assistant-response");
+
+if (askBtn) {
+
+    askBtn.addEventListener("click", function () {
+
+        const query = queryInput.value.trim();
+
+        if (!query) {
+            responseDiv.innerHTML = "<p>Please enter a question.</p>";
+            return;
+        }
+
+        responseDiv.innerHTML = "<p>Getting advisory...</p>";
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                fetch("/api/assistant/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRFToken()
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        lat: lat,
+                        lon: lon
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        responseDiv.innerHTML = `<p>${data.error}</p>`;
+                        return;
+                    }
+
+                    responseDiv.innerHTML = `
+                        <div>
+                            <strong>🌾 Crop:</strong> ${data.crop || "-"} <br>
+                            <strong>📘 Section:</strong> ${data.section || "-"} <br>
+                            <strong>📖 Info:</strong><br> ${data.content || "-"} <br><br>
+                            <strong>🌡 Temperature:</strong> ${data.current_temperature ?? "-"} °C <br>
+                            <strong>🧠 Advisory:</strong> ${data.advisory || "-"}
+                        </div>
+                    `;
+                });
+
+            });
+        }
+
+    });
+
 }

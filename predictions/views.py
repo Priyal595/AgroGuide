@@ -232,23 +232,41 @@ def user_insights(request):
     # 1️⃣ Total predictions
     total_predictions = predictions.count()
 
-    # 2️⃣ Crop frequency
-    top_crops = [
-        p.result["predictions"][0]["crop"]
-        for p in predictions
-    ]
+   # 2️⃣ Crop frequency (safe handling for old + new records)
+    # 2️⃣ Crop frequency (safe handling for old + new records)
+    top_crops = []
+
+    for p in predictions:
+        preds = p.result.get("predictions", [])
+        if not preds:
+            continue
+
+        first = preds[0]
+        crop_name = first.get("name") or first.get("crop")
+
+        if crop_name:
+            top_crops.append(crop_name)
+
     crop_counter = Counter(top_crops)
     crop_frequency = dict(crop_counter)
 
-    most_recommended_crop = crop_counter.most_common(1)[0][0]
+    most_recommended_crop = (
+        crop_counter.most_common(1)[0][0]
+        if crop_counter else None
+)
 
-    # 3️⃣ Confidence distribution
+# 3️⃣ Confidence distribution (safe handling)
     high = 0
     medium = 0
     low = 0
 
     for p in predictions:
-        confidence = p.result["predictions"][0]["confidence"]
+        preds = p.result.get("predictions", [])
+        if not preds:
+            continue
+
+        first = preds[0]
+        confidence = first.get("score") or first.get("confidence") or 0
 
         if confidence >= 0.7:
             high += 1
