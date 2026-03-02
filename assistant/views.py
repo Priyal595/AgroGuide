@@ -19,9 +19,9 @@ def assistant_api(request):
     if not question:
         return JsonResponse({"error": "Query is required"}, status=400)
 
-    answer = ask_assistant(question)
+    result = ask_assistant(question)
 
     return JsonResponse({
         "query": question,
-        "answer": answer
+        **result
     })
