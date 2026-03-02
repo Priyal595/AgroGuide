@@ -22,8 +22,9 @@ class FarmerAssistant:
             results = self.retriever.search(question, top_k=5)
             if results:
                 selected_crop = results[0]["crop"]
-            else:
-                return "Sorry, I could not detect the crop."
+            return {
+            "error": "Could not detect crop."
+            }
 
         # Step 2: detect section intent
         section_keywords = {
@@ -47,14 +48,25 @@ class FarmerAssistant:
         for chunk in self.retriever.metadata:
             if chunk["crop"] == selected_crop:
                 if target_section and target_section.lower() in chunk["section"].lower():
-                    return f"{selected_crop.upper()} - {chunk['section']}\n\n{chunk['content']}"
+                    return {
+                                "crop": selected_crop,
+                                "section": chunk["section"],
+                                "content": chunk["content"],
+                                "confidence": "deterministic_match"
+                    }
 
-        # fallback to first chunk of crop
         for chunk in self.retriever.metadata:
             if chunk["crop"] == selected_crop:
-                return f"{selected_crop.upper()}\n\n{chunk['content']}"
+                return {
+                    "crop": selected_crop,
+                    "section": chunk["section"],
+                    "content": chunk["content"],
+                    "confidence": "fallback_match"
+                }
 
-        return "Sorry, I could not find relevant information."
+        return {
+        "error": "Could not find relevant information."
+        }
 
 
 if __name__ == "__main__":
