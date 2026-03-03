@@ -7,13 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Dashboard JS Loaded");
   initializeDashboard();
 });
-<<<<<<< HEAD
-=======
+
 
 
 console.log("Dashboard JS Loaded");
 initializeDashboard();
->>>>>>> 0c788f4 (added location-based weather card to dashboard)
+
 
 document.addEventListener("DOMContentLoaded", () => {
     loadWeather();

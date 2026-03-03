@@ -2,6 +2,7 @@ const toggleBtn = document.getElementById("chatbot-toggle");
 const wrapper = document.getElementById("chatbot-wrapper");
 const closeBtn = document.getElementById("chatbot-close");
 
+
 let chatbotInitialized = false;
 
 toggleBtn.addEventListener("click", () => {
@@ -16,6 +17,16 @@ toggleBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
     wrapper.classList.remove("active");
     setTimeout(() => wrapper.classList.add("hidden"), 300);
+});
+
+toggleBtn.addEventListener("click", () => {
+    wrapper.classList.remove("hidden");
+    loadCategories();
+});
+
+closeBtn.addEventListener("click", () => {
+    wrapper.classList.add("hidden");
+
 });
 
 const messages = document.getElementById("chat-messages");
@@ -40,7 +51,7 @@ function addButton(text, onClick) {
   options.appendChild(btn);
 }
 
-<<<<<<< HEAD
+
 function showTyping() {
     const typing = document.createElement("div");
     typing.className = "bot typing";
@@ -50,8 +61,7 @@ function showTyping() {
     messages.scrollTop = messages.scrollHeight;
 }
 
-=======
->>>>>>> 8e37daa (added links to certain Questions in the chatbox)
+
 function addLink(title, url) {
     const linkDiv = document.createElement("div");
     linkDiv.className = "bot-link";
@@ -65,6 +75,7 @@ function addLink(title, url) {
     linkDiv.appendChild(anchor);
     messages.appendChild(linkDiv);
 }
+
 
 
 function loadCategories() {
@@ -101,9 +112,9 @@ function loadAnswer(category, question) {
   })
     .then(res => res.json())
     .then(data => {
+
       showTyping();
       setTimeout(() => {
-<<<<<<< HEAD
          const typingElement = document.getElementById("typing-indicator");
             if (typingElement) {
                 typingElement.remove();
@@ -137,29 +148,6 @@ function loadAnswer(category, question) {
     });
 }
 
-=======
-    addMessage(data.answer);
 
-    // Render links if present
-    if (Array.isArray(data.links) && data.links.length > 0) {
+loadCategories();
 
-        const sourceLabel = document.createElement("div");
-        sourceLabel.className = "bot-source-label";
-        sourceLabel.innerText = "📚 Sources:";
-        messages.appendChild(sourceLabel);
-
-        data.links.forEach(link => {
-            addLink(link.title, link.url);
-        });
-    }
-
-    data.related.forEach(r => {
-        addButton(r, () => loadAnswer(category, r));
-    });
-
-    addButton("🔄 Switch Category", loadCategories);
-
-}, 400);
-    });
-}
->>>>>>> 8e37daa (added links to certain Questions in the chatbox)
