@@ -2,13 +2,20 @@ const toggleBtn = document.getElementById("chatbot-toggle");
 const wrapper = document.getElementById("chatbot-wrapper");
 const closeBtn = document.getElementById("chatbot-close");
 
+let chatbotInitialized = false;
+
 toggleBtn.addEventListener("click", () => {
     wrapper.classList.remove("hidden");
-    loadCategories();
+    setTimeout(() => wrapper.classList.add("active"), 10);
+    messages.innerHTML = "";
+    options.innerHTML = "";
+
+    loadCategories(); 
 });
 
 closeBtn.addEventListener("click", () => {
-    wrapper.classList.add("hidden");
+    wrapper.classList.remove("active");
+    setTimeout(() => wrapper.classList.add("hidden"), 300);
 });
 
 const messages = document.getElementById("chat-messages");
@@ -32,6 +39,21 @@ function addButton(text, onClick) {
   btn.onclick = onClick;
   options.appendChild(btn);
 }
+
+function addLink(title, url) {
+    const linkDiv = document.createElement("div");
+    linkDiv.className = "bot-link";
+
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
+    anchor.innerText = "🔗 " + title;
+
+    linkDiv.appendChild(anchor);
+    messages.appendChild(linkDiv);
+}
+
 
 function loadCategories() {
   clearOptions();
@@ -68,13 +90,27 @@ function loadAnswer(category, question) {
     .then(res => res.json())
     .then(data => {
       setTimeout(() => {
-        addMessage(data.answer);
-        data.related.forEach(r => {
-          addButton(r, () => loadAnswer(category, r));
+    addMessage(data.answer);
+
+    // Render links if present
+    if (Array.isArray(data.links) && data.links.length > 0) {
+
+        const sourceLabel = document.createElement("div");
+        sourceLabel.className = "bot-source-label";
+        sourceLabel.innerText = "📚 Sources:";
+        messages.appendChild(sourceLabel);
+
+        data.links.forEach(link => {
+            addLink(link.title, link.url);
         });
-        addButton("🔄 Switch Category", loadCategories);
-      }, 400);
+    }
+
+    data.related.forEach(r => {
+        addButton(r, () => loadAnswer(category, r));
+    });
+
+    addButton("🔄 Switch Category", loadCategories);
+
+}, 400);
     });
 }
-
-loadCategories();

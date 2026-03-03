@@ -38,5 +38,6 @@ def get_answer(request):
     return JsonResponse({
         "category": category,
         "answer": data["answer"],
-        "related": data["related"]
+        "related": data["related"],
+        "links": data.get("links", []) 
     })
