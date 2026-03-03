@@ -10,5 +10,6 @@ urlpatterns = [
     path("history/<int:pk>/", views.delete_prediction, name="delete_prediction"),
     path("history/reset/", views.reset_history, name="reset_history"),
     path("news/", agro_news, name="agro_news"),
+    path("smart-farming/", views.smart_farming, name="smart_farming"),
 
 ]
