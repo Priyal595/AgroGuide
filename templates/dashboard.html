@@ -327,14 +327,35 @@
                     </div>
                 </div>
             </div>
-
+            
         </div>
     </div>
 </div>
+
+<!-- Your existing dashboard content -->
+
+<!-- ================= CHATBOT START ================= -->
+
+<div id="chatbot-toggle">💬</div>
+
+<div id="chatbot-wrapper" class="hidden">
+    <div id="chatbot-header">
+        <span>Smart Agri Assistant</span>
+        <button id="chatbot-close">✖</button>
+    </div>
+    <div id="chat-messages"></div>
+    <div id="chat-options"></div>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/guided_chatbot.css' %}">
+<script src="{% static 'js/guided_chatbot.js' %}"></script>
+
+<!-- ================= CHATBOT END ================= -->
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/slider.js' %}"></script>
 <script src="{% static 'js/charts.js' %}"></script>
 <script src="{% static 'js/dashboard.js' %}" defer></script>
+<script src="{% static 'js/guided_chatbot.js' %}"></script>
 {% endblock %}

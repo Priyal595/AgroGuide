@@ -7,4 +7,5 @@ urlpatterns = [
     path("api/", include("predictions.urls")),
     path("api/", include("weather.urls")), 
     path("api/", include("assistant.urls")),
+    path("api/chatbot/", include("guided_chatbot.urls")),
 ]

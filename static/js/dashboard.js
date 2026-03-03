@@ -485,27 +485,80 @@ document.addEventListener("click", function (e) {
     responseDiv.innerHTML = "<p>Getting advisory...</p>";
 
     const callAssistant = (lat, lon) => {
-      fetch("/api/assistant/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCSRFToken()
-        },
-        body: JSON.stringify({ query, lat, lon })
-      })
-      .then(res => res.json())
-      .then(data => {
-        responseDiv.innerHTML = `
-          <div>
-            <strong>🌾 Crop:</strong> ${data.crop || "-"} <br>
-            <strong>📘 Section:</strong> ${data.section || "-"} <br>
-            <strong>📖 Info:</strong><br> ${data.content || "-"} <br><br>
-            <strong>🌡 Temperature:</strong> ${data.current_temperature ?? "-"} °C <br>
-            <strong>🧠 Advisory:</strong> ${data.advisory || "-"}
-          </div>
-        `;
-      });
-    };
+  fetch("/api/assistant/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCSRFToken()
+    },
+    body: JSON.stringify({ query, lat, lon })
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    responseDiv.innerHTML = "";
+
+    const card = document.createElement("div");
+    card.className = "assistant-output";
+
+    // Header
+    card.innerHTML += `
+      <div class="assistant-header">
+        🌾 <strong>${data.crop || "-"}</strong>
+      </div>
+    `;
+
+    // Clean paragraph formatting
+    let rawText = data.content || "";
+
+// Split into logical keyword sections
+    let parts = rawText.split(/(?=Types of|Chemical|Diseases|Pests)/g);
+
+    let seasonInfo = parts[0] || "";
+    let remaining = parts.slice(1);
+
+  let formattedInfo = `
+    <p><strong>${seasonInfo.trim()}</strong></p>
+` ;
+
+  if (remaining.length > 0) {
+    formattedInfo += "<ul>";
+    remaining.forEach(item => {
+      formattedInfo += `<li>${item.trim()}</li>`;
+    });
+    formattedInfo += "</ul>";
+  }
+
+    card.innerHTML += `
+      <div class="assistant-section">
+        <div class="section-title">📘 ${data.section || "Information"}</div>
+        <div class="section-content">
+          ${formattedInfo}
+        </div>
+      </div>
+    `;
+
+    // Weather
+    card.innerHTML += `
+      <div class="assistant-section">
+        <div class="section-title">🌡 Weather</div>
+        <div class="section-content">
+          Temperature: <strong>${data.current_temperature ?? "-"}°C</strong>
+        </div>
+      </div>
+    `;
+
+    // Advisory
+    card.innerHTML += `
+      <div class="assistant-decision">
+        🧠 <strong>Recommendation</strong>
+        <div>${data.advisory || "-"}</div>
+      </div>
+    `;
+
+    responseDiv.appendChild(card);
+  });
+};
 
     if (!navigator.geolocation) {
       callAssistant(null, null);

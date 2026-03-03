@@ -545,3 +545,42 @@
   font-size: 14px;
   line-height: 1.6;
 }
+
+/* ===== Assistant Output Structure ===== */
+
+.assistant-output {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  /* clean spacing between blocks */
+}
+
+.assistant-header {
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.assistant-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.section-content p {
+  margin: 4px 0;
+}
+
+.assistant-decision {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+  font-weight: 500;
+}
+
