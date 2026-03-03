@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container" style="padding: 40px 0;">
+
+    <h2>Smart Farming Advisor</h2>
+
+    {% if error %}
+        <div class="card" style="padding: 20px; margin-top: 20px;">
+            <p>{{ error }}</p>
+        </div>
+    {% else %}
+
+    <!-- Environmental Profile -->
+    <div class="card" style="padding: 20px; margin-top: 20px;">
+        <h4>Environmental Profile</h4>
+        <ul>
+            <li><strong>Temperature:</strong> {{ profile.temperature }} °C</li>
+            <li><strong>Rainfall:</strong> {{ profile.rainfall }} mm</li>
+            <li><strong>Humidity:</strong> {{ profile.humidity }} %</li>
+            <li><strong>Nitrogen:</strong> {{ profile.nitrogen }}</li>
+            <li><strong>pH:</strong> {{ profile.ph }}</li>
+        </ul>
+    </div>
+    
+    {% if weather_data %}
+    <div class="card" style="padding: 20px; margin-top: 20px; border-left: 5px solid #2980b9;">
+        <h4>Live Weather Conditions</h4>
+        <ul>
+            <li><strong>Temperature:</strong> {{ weather_data.temperature }} °C</li>
+            <li><strong>Humidity:</strong> {{ weather_data.humidity }} %</li>
+            <li><strong>Rainfall (1h):</strong> {{ weather_data.rainfall }} mm</li>
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Critical Issues -->
+    {% if detected_issues %}
+    <div class="card" style="padding: 20px; margin-top: 20px; border-left: 5px solid #c0392b;">
+        <h4>Critical Issues Detected</h4>
+        <ul>
+            {% for issue in detected_issues %}
+                <li><strong>{{ issue }}</strong></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Critical Recommendations -->
+    {% for practice in critical_recommendations %}
+    <div class="card" style="padding: 25px; margin-top: 20px; border-left: 5px solid #e74c3c;">
+        <h3>{{ practice.title }}</h3>
+        <p><strong>Category:</strong> {{ practice.category }}</p>
+        <p>{{ practice.reason }}</p>
+
+        <details style="margin-top: 10px;">
+            <summary><strong>View Implementation</strong></summary>
+
+            <h5>Steps</h5>
+            <ul>
+                {% for step in practice.steps %}
+                    <li>{{ step }}</li>
+                {% endfor %}
+            </ul>
+
+            <h5>Benefits</h5>
+            <ul>
+                {% for benefit in practice.benefits %}
+                    <li>{{ benefit }}</li>
+                {% endfor %}
+            </ul>
+        </details>
+    </div>
+    {% endfor %}
+
+    <!-- Optimization Recommendations -->
+    <div style="margin-top: 40px;">
+        <h3>Optimization Strategies</h3>
+    </div>
+
+    {% for practice in optimization_recommendations %}
+    <div class="card" style="padding: 25px; margin-top: 20px;">
+        <h3>{{ practice.title }}</h3>
+        <p><strong>Category:</strong> {{ practice.category }}</p>
+        <p>{{ practice.reason }}</p>
+
+        <details style="margin-top: 10px;">
+            <summary><strong>View Implementation</strong></summary>
+
+            <h5>Steps</h5>
+            <ul>
+                {% for step in practice.steps %}
+                    <li>{{ step }}</li>
+                {% endfor %}
+            </ul>
+
+            <h5>Benefits</h5>
+            <ul>
+                {% for benefit in practice.benefits %}
+                    <li>{{ benefit }}</li>
+                {% endfor %}
+            </ul>
+        </details>
+    </div>
+    {% endfor %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
