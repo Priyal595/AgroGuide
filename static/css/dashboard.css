@@ -27,10 +27,10 @@
 }
 
 /* Dashboard Grid */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .dashboard-main {
@@ -906,4 +906,29 @@
 
 .weather-icon {
   font-size: 48px;
+}
+
+/* ================= CHATBOT TOGGLE BUTTON ================= */
+
+#chatbot-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #2e7d32, #388e3c);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  z-index: 10000;
+  transition: 0.3s ease;
+}
+
+#chatbot-toggle:hover {
+  transform: scale(1.1);
 }

@@ -19,15 +19,7 @@ closeBtn.addEventListener("click", () => {
     setTimeout(() => wrapper.classList.add("hidden"), 300);
 });
 
-toggleBtn.addEventListener("click", () => {
-    wrapper.classList.remove("hidden");
-    loadCategories();
-});
 
-closeBtn.addEventListener("click", () => {
-    wrapper.classList.add("hidden");
-
-});
 
 const messages = document.getElementById("chat-messages");
 const options = document.getElementById("chat-options");
@@ -149,5 +141,4 @@ function loadAnswer(category, question) {
 }
 
 
-loadCategories();
 
