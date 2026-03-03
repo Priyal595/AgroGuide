@@ -15,6 +15,10 @@ from ml.suitability import analyze_suitability
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import get_object_or_404
+
+from .services.advisory_engine import generate_modern_advisory
+from weather.services import fetch_weather_by_coordinates
+
 @require_http_methods(["DELETE"])
 @login_required
 def delete_prediction(request, pk):
@@ -285,3 +289,51 @@ def user_insights(request):
         "confidence_distribution": confidence_distribution,
         "average_conditions": average_conditions,
     })
+
+@login_required
+def smart_farming(request):
+    latest_prediction = (
+        Prediction.objects
+        .filter(user=request.user)
+        .order_by("-created_at")
+        .first()
+    )
+
+    if not latest_prediction:
+        return render(request, "smart_farming.html", {
+            "error": "Make at least one prediction to receive smart farming recommendations."
+        })
+
+    # --------------------------------------
+    # Fetch live weather data (location-aware)
+    # --------------------------------------
+
+    lat = request.GET.get("lat")
+    lon = request.GET.get("lon")
+
+    weather_data = None
+
+    if lat and lon:
+        try:
+            weather_data = fetch_weather_by_coordinates(lat, lon)
+        except Exception:
+            weather_data = None
+
+    # --------------------------------------
+    # Generate advisory using soil + weather
+    # --------------------------------------
+
+    advisory = generate_modern_advisory(
+        latest_prediction,
+        weather_data
+    )
+
+    context = {
+        "profile": advisory["profile"],
+        "weather_data": weather_data,
+        "detected_issues": advisory["detected_issues"],
+        "critical_recommendations": advisory["critical_recommendations"],
+        "optimization_recommendations": advisory["optimization_recommendations"],
+    }
+
+    return render(request, "smart_farming.html", context)
