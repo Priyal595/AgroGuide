@@ -7,6 +7,78 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Dashboard JS Loaded");
   initializeDashboard();
 });
+<<<<<<< HEAD
+=======
+
+
+console.log("Dashboard JS Loaded");
+initializeDashboard();
+>>>>>>> 0c788f4 (added location-based weather card to dashboard)
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadWeather();
+});
+
+
+function loadWeather() {
+    const container = document.getElementById("weather-content");
+
+    if (!navigator.geolocation) {
+        container.innerHTML = "<p>Location access not supported.</p>";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            fetch(`/api/weather/?lat=${lat}&lon=${lon}`)
+                .then(res => res.json())
+                .then(data => renderWeather(data))
+                .catch(() => {
+                    container.innerHTML = "<p>Unable to load weather.</p>";
+                });
+        },
+        () => {
+            container.innerHTML = "<p>Location permission denied.</p>";
+        }
+    );
+}
+
+
+function renderWeather(data) {
+    const container = document.getElementById("weather-content");
+    console.log("Weather Data Received:", data);
+    container.innerHTML = `
+        <div class="weather-wrapper">
+
+            <div class="weather-left">
+                <div class="weather-city">
+                    📍 ${data.city || "Your Location"}
+                </div>
+
+                <div class="weather-temp">
+                    ${Math.round(data.temperature)}°C
+                </div>
+
+                <div class="weather-desc">
+                    ${data.description}
+                </div>
+
+                <div class="weather-details">
+                    <div>💧 ${data.humidity}% Humidity</div>
+                    <div>🌬 ${data.wind_speed} m/s Wind</div>
+                </div>
+            </div>
+
+            <div class="weather-icon">
+            ${data.temperature > 30 ? "☀️" : "🌤"}
+            </div>
+
+        </div>
+    `;
+}
 
 function getCSRFToken() {
   const name = "csrftoken";

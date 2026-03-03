@@ -624,6 +624,7 @@
     pointer-events: none;
 }
 
+<<<<<<< HEAD
 /* Responsive Fixes */
 @media (max-width: 768px) {
     .learn-cta-content {
@@ -635,4 +636,276 @@
         width: 100%;
         justify-content: center;
     }
+=======
+/* ============================= */
+/* CHATBOT WINDOW */
+/* ============================= */
+
+#chatbot-wrapper {
+  position: fixed;
+  bottom: 115px;
+  right: 20px;
+  width: 370px;
+  height: 520px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+
+  transform: translateY(30px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+#chatbot-wrapper.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
+#chatbot-header {
+  background: linear-gradient(135deg, #2e7d32, #388e3c);
+  color: white;
+  padding: 14px 16px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+#chatbot-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#chatbot-header button:hover {
+  transform: scale(1.2);
+}
+
+/* ============================= */
+/* MESSAGE AREA */
+/* ============================= */
+
+#chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background: #f4f6f8;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar styling */
+#chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+  background: #c8e6c9;
+  border-radius: 10px;
+}
+
+/* ============================= */
+/* MESSAGE BUBBLES */
+/* ============================= */
+
+.bot {
+  background: #e8f5e9;
+  color: #1b5e20;
+  padding: 10px 14px;
+  border-radius: 15px 15px 15px 5px;
+  max-width: 80%;
+  font-size: 13px;
+  line-height: 1.4;
+  animation: fadeIn 0.2s ease-in;
+}
+
+.user {
+  background: #2e7d32;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 15px 15px 5px 15px;
+  align-self: flex-end;
+  max-width: 80%;
+  font-size: 13px;
+  line-height: 1.4;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================= */
+/* OPTIONS AREA */
+/* ============================= */
+
+#chat-options {
+  padding: 10px;
+  border-top: 1px solid #eee;
+  background: #ffffff;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ============================= */
+/* OPTION BUTTONS */
+/* ============================= */
+
+#chat-options button {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #2e7d32;
+  background: white;
+  color: #2e7d32;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#chat-options button:hover {
+  background: #2e7d32;
+  color: white;
+  transform: translateY(-1px);
+}
+
+#chat-options button:active {
+  transform: scale(0.95);
+}
+
+/* ============================= */
+/* RESPONSIVE (Mobile) */
+/* ============================= */
+
+@media (max-width: 480px) {
+  #chatbot-wrapper {
+    width: 95%;
+    right: 2.5%;
+    bottom: 90px;
+    height: 75vh;
+  }
+
+  #chatbot-toggle {
+    right: 15px;
+    bottom: 15px;
+  }
+}
+
+/* ============================= */
+/* BOT SOURCE LINKS */
+/* ============================= */
+
+.bot-source-label {
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.bot-link {
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.bot-link a {
+  color: #2e7d32;
+  text-decoration: none;
+}
+
+.bot-link a:hover {
+  text-decoration: underline;
+}
+
+.typing {
+  opacity: 0.8;
+  font-style: italic;
+  animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ================= WEATHER CARD ================= */
+
+.weather-card {
+  background: linear-gradient(135deg, #f8fbf8, #eef7f1);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.weather-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.weather-city {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.weather-temp {
+  font-size: 42px;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.weather-desc {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.weather-details {
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weather-right img {
+  width: 80px;
+  height: 80px;
+}
+
+.weather-icon {
+  font-size: 48px;
+>>>>>>> 0c788f4 (added location-based weather card to dashboard)
 }
