@@ -40,6 +40,15 @@ function addButton(text, onClick) {
   options.appendChild(btn);
 }
 
+function showTyping() {
+    const typing = document.createElement("div");
+    typing.className = "bot typing";
+    typing.id = "typing-indicator";
+    typing.innerText = "🤖 Typing...";
+    messages.appendChild(typing);
+    messages.scrollTop = messages.scrollHeight;
+}
+
 function addLink(title, url) {
     const linkDiv = document.createElement("div");
     linkDiv.className = "bot-link";
@@ -89,8 +98,14 @@ function loadAnswer(category, question) {
   })
     .then(res => res.json())
     .then(data => {
+      showTyping();
       setTimeout(() => {
-    addMessage(data.answer);
+         const typingElement = document.getElementById("typing-indicator");
+            if (typingElement) {
+                typingElement.remove();
+            }
+
+            addMessage(data.answer);
 
     // Render links if present
     if (Array.isArray(data.links) && data.links.length > 0) {
@@ -111,6 +126,10 @@ function loadAnswer(category, question) {
 
     addButton("🔄 Switch Category", loadCategories);
 
-}, 400);
+}, 800);
+    })
+    .catch(error => {
+        console.error("Error fetching answer:", error);
     });
 }
+

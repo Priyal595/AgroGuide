@@ -25,7 +25,7 @@ def get_weather(request):
             )
 
     # If coordinates are provided
-    if lat and lon:
+    if lat is not None and lon is not None:
         try:
             weather_data = fetch_weather_by_coordinates(lat, lon)
             return JsonResponse(weather_data)

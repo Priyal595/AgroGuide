@@ -820,3 +820,95 @@
     bottom: 15px;
   }
 }
+
+/* ============================= */
+/* BOT SOURCE LINKS */
+/* ============================= */
+
+.bot-source-label {
+  font-size: 12px;
+  margin-top: 6px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.bot-link {
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.bot-link a {
+  color: #2e7d32;
+  text-decoration: none;
+}
+
+.bot-link a:hover {
+  text-decoration: underline;
+}
+
+.typing {
+  opacity: 0.8;
+  font-style: italic;
+  animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ================= WEATHER CARD ================= */
+
+.weather-card {
+  background: linear-gradient(135deg, #f8fbf8, #eef7f1);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.weather-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.weather-city {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.weather-temp {
+  font-size: 42px;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.weather-desc {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.weather-details {
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.weather-right img {
+  width: 80px;
+  height: 80px;
+}
+
+.weather-icon {
+  font-size: 48px;
+}
