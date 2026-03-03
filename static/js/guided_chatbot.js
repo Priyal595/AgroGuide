@@ -40,6 +40,7 @@ function addButton(text, onClick) {
   options.appendChild(btn);
 }
 
+<<<<<<< HEAD
 function showTyping() {
     const typing = document.createElement("div");
     typing.className = "bot typing";
@@ -49,6 +50,8 @@ function showTyping() {
     messages.scrollTop = messages.scrollHeight;
 }
 
+=======
+>>>>>>> 8e37daa (added links to certain Questions in the chatbox)
 function addLink(title, url) {
     const linkDiv = document.createElement("div");
     linkDiv.className = "bot-link";
@@ -100,6 +103,7 @@ function loadAnswer(category, question) {
     .then(data => {
       showTyping();
       setTimeout(() => {
+<<<<<<< HEAD
          const typingElement = document.getElementById("typing-indicator");
             if (typingElement) {
                 typingElement.remove();
@@ -133,3 +137,29 @@ function loadAnswer(category, question) {
     });
 }
 
+=======
+    addMessage(data.answer);
+
+    // Render links if present
+    if (Array.isArray(data.links) && data.links.length > 0) {
+
+        const sourceLabel = document.createElement("div");
+        sourceLabel.className = "bot-source-label";
+        sourceLabel.innerText = "📚 Sources:";
+        messages.appendChild(sourceLabel);
+
+        data.links.forEach(link => {
+            addLink(link.title, link.url);
+        });
+    }
+
+    data.related.forEach(r => {
+        addButton(r, () => loadAnswer(category, r));
+    });
+
+    addButton("🔄 Switch Category", loadCategories);
+
+}, 400);
+    });
+}
+>>>>>>> 8e37daa (added links to certain Questions in the chatbox)
