@@ -6,8 +6,9 @@ from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
 from django.conf import settings
+import resend
+import os
 # Create your views here.
 def landing(request):
     return render(request, "landing.html")
@@ -83,17 +84,19 @@ def register(request):
         )
 
         # 6. Send verification email (console backend)
-        try:
-            send_mail(
-                subject="Verify your CropAdvisor account",
-                message=f"Click the link below to verify your account:\n\n{verify_link}",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=False,
-            )
-            print("EMAIL SENT")
-        except Exception as e:
-            print("EMAIL ERROR:", e)
+       
+
+        resend.api_key = os.environ.get("RESEND_API_KEY")
+
+        resend.Emails.send({
+            "from": "AgroGuide <onboarding@resend.dev>",
+            "to": email,
+            "subject": "Verify your CropAdvisor account",
+            "html": f"""
+            <p>Click the link below to verify your account:</p>
+            <a href="{verify_link}">{verify_link}</a>
+            """
+        })
 
         return render(request, "verify_status.html", {"status": "pending"})
 
