@@ -83,12 +83,17 @@ def register(request):
         )
 
         # 6. Send verification email (console backend)
-        send_mail(
-            subject="Verify your CropAdvisor account",
-            message=f"Click the link below to verify your account:\n\n{verify_link}",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-        )
+        try:
+            send_mail(
+                subject="Verify your CropAdvisor account",
+                message=f"Click the link below to verify your account:\n\n{verify_link}",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=False,
+            )
+            print("EMAIL SENT")
+        except Exception as e:
+            print("EMAIL ERROR:", e)
 
         return render(request, "verify_status.html", {"status": "pending"})
 
