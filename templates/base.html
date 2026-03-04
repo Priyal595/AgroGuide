@@ -28,6 +28,7 @@
                         {% if user.is_authenticated %}
                             <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                             <a href="{% url 'smart_farming' %}" class="nav-link">Smart Farming</a>
+                            <a href="{% url 'voice:assistant' %}" class="nav-link">Voice Assistant</a>
                             <a href="{% url 'logout' %}" class="nav-link">Logout</a>
                         {% else %}
                             <a href="{% url 'login' %}" class="nav-link">Login</a>

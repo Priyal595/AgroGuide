@@ -47,6 +47,7 @@ CREATED_APPS = [
     'predictions',
     'weather',
     'learning',
+    'voice',
 ]
 
 INSTALLED_APPS += CREATED_APPS
@@ -154,4 +155,22 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
+# ── Voice Assistant settings ───────────────────────────────────
+# ── Azure OpenAI  (for AI chat responses) ────────────────────────────────────
+AZURE_OPENAI_ENDPOINT    = os.environ.get("AZURE_OPENAI_ENDPOINT",    "")
+AZURE_OPENAI_API_KEY     = os.environ.get("AZURE_OPENAI_API_KEY",     "")
+AZURE_OPENAI_API_VERSION = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-12-01-preview")
+AZURE_OPENAI_DEPLOYMENT  = os.environ.get("AZURE_OPENAI_DEPLOYMENT",  "gpt35")
+
+# ── Azure Whisper  (for voice recording → text, PRIMARY STT) ─────────────────
+AZURE_WHISPER_KEY      = os.environ.get("AZURE_WHISPER_KEY",      "")
+AZURE_WHISPER_ENDPOINT = os.environ.get("AZURE_WHISPER_ENDPOINT", "")
+AZURE_API_VERSION      = os.environ.get("AZURE_API_VERSION",      "2024-12-01-preview")
+
+# ── Azure Speech  (for TTS playback + fallback STT) ──────────────────────────
+AZURE_SPEECH_KEY    = os.environ.get("AZURE_SPEECH_KEY",    "")
+AZURE_SPEECH_REGION = os.environ.get("AZURE_SPEECH_REGION", "")
+
+# ── OpenWeatherMap  (for weather + crop alerts) ───────────────────────────────
+OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
 
