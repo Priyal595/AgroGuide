@@ -1,0 +1,193 @@
+/* Container Spacing */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* Page Header */
+h2 {
+    color: #1f6c4c;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Generic Card Styling */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    list-style-type: none;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+/* Card Titles */
+.card h4 {
+    margin-top: 0;
+    color: #2d6a4f;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+/* List Styling */
+ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+/* Specific Alerts/Borders logic from your HTML */
+.card[style*="border-left"] {
+    background-color: #fffafa;
+}
+
+/* Recommendation Cards */
+h3 {
+    margin-top: 0;
+    color: #2d6a4f;
+}
+
+/* implementation Details (The Accordion) */
+details {
+    background: #f8fcf9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #d8eada;
+}
+
+summary {
+    cursor: pointer;
+    color: #1b4332;
+    font-weight: 600;
+}
+
+summary:hover {
+    color: #2d6a4f;
+}
+
+/* Detail Headers */
+h5 {
+    color: #2d6a4f;
+    margin: 15px 0 5px 0;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Detail lists shouldn't flex like the stats list */
+details ul li {
+    display: block;
+    border-bottom: none;
+    padding: 4px 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+details ul li::before {
+    content: "•";
+    color: #2d6a4f;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+/* Optimization Header */
+h3 + div, h3 {
+    margin-top: 40px;
+}
+
+/* Main Container Card */
+.advisor-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+    margin-bottom: 30px;
+}
+
+/* Header Styling */
+.profile-title {
+    font-size: 1.30rem;
+    font-weight: 800;
+    color: #2d6a4f;
+    letter-spacing: 1.5px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
+
+/* Horizontal Grid Layout */
+.metrics-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Individual Metric Box */
+.metric-box {
+    flex: 1;
+    min-width: 140px;
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.metric-header .icon {
+    font-size: 1.1rem;
+    opacity: 0.7;
+}
+
+.metric-header .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #95a5a6;
+    letter-spacing: 0.5px;
+}
+
+/* Large Value Styling */
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d6a4f; /* Dark green matching your theme */
+    display: flex;
+    align-items: baseline;
+}
+
+.metric-value .unit {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #7f8c8d;
+    margin-left: 2px;
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 600px) {
+    .metrics-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}

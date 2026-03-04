@@ -1,0 +1,561 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Voice Assistant – AgroGuide{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   VOICE ASSISTANT  –  Styles
+═══════════════════════════════════════════════════════════════ */
+
+.va-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 16px 80px;
+  font-family: inherit;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.va-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.va-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #166534;
+  margin-bottom: 6px;
+}
+.va-header p { color: #6b7280; font-size: 1rem; }
+
+/* ── Language pills ─────────────────────────────────────────── */
+.lang-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.lang-pill {
+  padding: 6px 18px;
+  border-radius: 999px;
+  border: 1.5px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+}
+.lang-pill.active, .lang-pill:hover {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+/* ── Card shell ─────────────────────────────────────────────── */
+.va-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+
+/* ── Mic button ─────────────────────────────────────────────── */
+.mic-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 4px;
+}
+#micBtn {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg,#16a34a,#15803d);
+  color: #fff;
+  font-size: 2.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(22,163,74,.35);
+  transition: transform .15s, box-shadow .15s;
+  display: flex; align-items: center; justify-content: center;
+}
+#micBtn:hover  { transform: scale(1.07); }
+#micBtn.active {
+  background: linear-gradient(135deg,#dc2626,#b91c1c);
+  animation: micPulse 1.2s infinite;
+}
+@keyframes micPulse {
+  0%,100% { box-shadow: 0 0 0 0   rgba(220,38,38,.4); }
+  50%      { box-shadow: 0 0 0 18px rgba(220,38,38,0); }
+}
+#micStatus { color:#6b7280; font-size:.9rem; }
+
+/* ── Text bar ────────────────────────────────────────────────── */
+.text-bar {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.text-bar input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .15s;
+}
+.text-bar input:focus { border-color: #16a34a; }
+.text-bar button {
+  padding: 12px 22px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: .95rem;
+  cursor: pointer;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.text-bar button:hover { background: #15803d; }
+
+/* ── Quick actions ──────────────────────────────────────────── */
+.qa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap: 14px;
+}
+.qa-tile {
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  user-select: none;
+}
+.qa-tile:hover { border-color:#16a34a; background:#f0fdf4; }
+.qa-tile .tile-icon { font-size: 2rem; margin-bottom: 8px; }
+.qa-tile .tile-label { font-size:.88rem; font-weight:600; color:#374151; }
+.qa-tile .tile-sub   { font-size:.76rem; color:#9ca3af; margin-top:3px; }
+
+/* ── Loading dots ────────────────────────────────────────────── */
+#loader {
+  display: none;
+  text-align: center;
+  padding: 20px 0;
+  color: #6b7280;
+  font-size: .9rem;
+}
+.dot {
+  display: inline-block;
+  width: 9px; height: 9px;
+  background: #16a34a;
+  border-radius: 50%;
+  margin: 0 3px;
+  animation: dotBounce .9s infinite ease-in-out both;
+}
+.dot:nth-child(2) { animation-delay:.15s; }
+.dot:nth-child(3) { animation-delay:.30s; }
+@keyframes dotBounce {
+  0%,80%,100% { transform: scale(0); }
+  40%          { transform: scale(1); }
+}
+
+/* ── Response card ───────────────────────────────────────────── */
+#responseCard {
+  display: none;
+  border-color: #bbf7d0;
+}
+.rc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.rc-badge {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #6b7280;
+}
+#speakBtn {
+  background: none;
+  border: 1.5px solid #16a34a;
+  color: #16a34a;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: .83rem;
+  cursor: pointer;
+  transition: all .15s;
+}
+#speakBtn:hover { background:#16a34a; color:#fff; }
+#transcriptLine {
+  font-size: .86rem;
+  color: #9ca3af;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+#responseText {
+  font-size: 1rem;
+  color: #111827;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+#audioWrap { margin-top:14px; display:none; }
+#audioEl   { width:100%; }
+
+/* ── History ─────────────────────────────────────────────────── */
+.history-section { margin-top: 36px; }
+.history-section h2 {
+  font-size:1.05rem; font-weight:600; color:#374151;
+  border-bottom:1.5px solid #e5e7eb;
+  padding-bottom:8px; margin-bottom:14px;
+}
+.h-item {
+  background:#fafafa;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:12px 16px;
+  margin-bottom:10px;
+}
+.h-meta {
+  display:flex; justify-content:space-between;
+  font-size:.78rem; color:#9ca3af; margin-bottom:4px;
+}
+.h-q { font-size:.9rem; color:#111827; }
+.h-a {
+  font-size:.84rem; color:#4b5563;
+  margin-top:6px; padding-top:6px;
+  border-top:1px solid #e5e7eb;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="va-page">
+
+  <!-- ── Header ───────────────────────────────────────────────── -->
+  <div class="va-header">
+    <h1>🌾 Voice Assistant</h1>
+    <p>Ask anything about farming, weather, crop prices or government schemes</p>
+  </div>
+
+  <!-- ── Language selector ────────────────────────────────────── -->
+  <div class="lang-row">
+    <button class="lang-pill active" data-lang="en">🇬🇧 English</button>
+    <button class="lang-pill"        data-lang="hi">🇮🇳 हिंदी</button>
+    <button class="lang-pill"        data-lang="te">🟢 తెలుగు</button>
+    <button class="lang-pill"        data-lang="ta">🟠 தமிழ்</button>
+    <button class="lang-pill"        data-lang="mr">🔵 मराठी</button>
+    <button class="lang-pill"        data-lang="bn">🟣 বাংলা</button>
+  </div>
+
+  <!-- ── Mic + Text input card ────────────────────────────────── -->
+  <div class="va-card">
+    <div class="mic-wrap">
+      <button id="micBtn" title="Click to start recording">🎙️</button>
+      <span id="micStatus">Click the mic and speak</span>
+    </div>
+    <div class="text-bar">
+      <input id="textInput" type="text" placeholder="Or type your question here…" autocomplete="off" />
+      <button id="sendBtn">Send ➤</button>
+    </div>
+  </div>
+
+  <!-- ── Quick actions ────────────────────────────────────────── -->
+  <div class="va-card">
+    <div class="qa-grid">
+      <div class="qa-tile" data-action="weather">
+        <div class="tile-icon">🌤️</div>
+        <div class="tile-label">Weather</div>
+        <div class="tile-sub">Current forecast</div>
+      </div>
+      <div class="qa-tile" data-action="crop">
+        <div class="tile-icon">🌾</div>
+        <div class="tile-label">Crop Prices</div>
+        <div class="tile-sub">Market rates</div>
+      </div>
+      <div class="qa-tile" data-action="schemes">
+        <div class="tile-icon">🏛️</div>
+        <div class="tile-label">Gov Schemes</div>
+        <div class="tile-sub">Farmer benefits</div>
+      </div>
+      <div class="qa-tile" data-action="advice">
+        <div class="tile-icon">💡</div>
+        <div class="tile-label">Farming Advice</div>
+        <div class="tile-sub">Ask the AI</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loader ────────────────────────────────────────────────── -->
+  <div id="loader">
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    &nbsp; Processing…
+  </div>
+
+  <!-- ── Response card ─────────────────────────────────────────── -->
+  <div class="va-card" id="responseCard">
+    <div class="rc-top">
+      <span class="rc-badge">🤖 Assistant</span>
+      <button id="speakBtn">🔊 Play</button>
+    </div>
+    <div id="transcriptLine"></div>
+    <div id="responseText"></div>
+    <div id="audioWrap">
+      <audio id="audioEl" controls></audio>
+    </div>
+  </div>
+
+  <!-- ── History ───────────────────────────────────────────────── -->
+  {% if recent_queries %}
+  <div class="history-section">
+    <h2>📋 Recent Queries</h2>
+    {% for q in recent_queries %}
+    <div class="h-item">
+      <div class="h-meta">
+        <span>{% if q.query_type == "audio" %}🎙️ Voice{% else %}⌨️ Text{% endif %} · {{ q.language|upper }}</span>
+        <span>{{ q.timestamp|date:"d M Y, H:i" }}</span>
+      </div>
+      <div class="h-q">{{ q.query }}</div>
+      <div class="h-a">{{ q.response|truncatechars:220 }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div><!-- /va-page -->
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   VOICE ASSISTANT  –  JavaScript
+═══════════════════════════════════════════════════════════════ */
+
+// ── URLs (Django reverse injected into template) ──────────────
+const URLS = {
+  processText:    "{% url 'voice:process_text' %}",
+  processAudio:   "{% url 'voice:process_audio' %}",
+  weather:        "{% url 'voice:weather' %}",
+  cropPrices:     "{% url 'voice:crop_prices' %}",
+  govSchemes:     "{% url 'voice:gov_schemes' %}",
+};
+
+// ── CSRF cookie helper ────────────────────────────────────────
+function getCsrf() {
+  const m = document.cookie.match(/csrftoken=([^;]+)/);
+  return m ? m[1] : "";
+}
+
+// ── State ─────────────────────────────────────────────────────
+let selectedLang    = "en";
+let mediaRecorder   = null;
+let audioChunks     = [];
+let isRecording     = false;
+let currentAudioB64 = null;
+
+// ── Language pills ────────────────────────────────────────────
+document.querySelectorAll(".lang-pill").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".lang-pill").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedLang = btn.dataset.lang;
+  });
+});
+
+// ── Loader ────────────────────────────────────────────────────
+const loader = document.getElementById("loader");
+function showLoader() { loader.style.display = "block"; }
+function hideLoader() { loader.style.display = "none";  }
+
+// ── Show response ─────────────────────────────────────────────
+function showResponse(transcript, responseText, audioB64) {
+  const card       = document.getElementById("responseCard");
+  const transcEl   = document.getElementById("transcriptLine");
+  const responseEl = document.getElementById("responseText");
+  const audioWrap  = document.getElementById("audioWrap");
+  const audioEl    = document.getElementById("audioEl");
+
+  transcEl.textContent   = transcript ? `You said: "${transcript}"` : "";
+  responseEl.textContent = responseText || "(No response)";
+  card.style.display     = "block";
+  currentAudioB64        = audioB64 || null;
+
+  if (audioB64) {
+    audioEl.src         = "data:audio/wav;base64," + audioB64;
+    audioWrap.style.display = "block";
+    audioEl.play().catch(() => {}); // auto-play (may be blocked by browser)
+  } else {
+    audioWrap.style.display = "none";
+  }
+
+  card.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ── Speak button (fallback = browser TTS) ────────────────────
+document.getElementById("speakBtn").addEventListener("click", () => {
+  if (currentAudioB64) {
+    document.getElementById("audioEl").play();
+  } else {
+    const text = document.getElementById("responseText").textContent;
+    if (text && window.speechSynthesis) {
+      const utt  = new SpeechSynthesisUtterance(text);
+      utt.lang   = selectedLang === "en" ? "en-US" : selectedLang + "-IN";
+      speechSynthesis.speak(utt);
+    }
+  }
+});
+
+// ── Generic JSON POST ─────────────────────────────────────────
+async function apiPost(url, body) {
+  const res = await fetch(url, {
+    method:  "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken":  getCsrf(),
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Server error");
+  return data;
+}
+
+// ── Send text ─────────────────────────────────────────────────
+async function sendText(text) {
+  if (!text.trim()) return;
+  showLoader();
+  try {
+    const data = await apiPost(URLS.processText, { text: text.trim(), language: selectedLang });
+    showResponse(null, data.response_text, data.audio_data);
+  } catch (e) {
+    alert("❌ " + e.message);
+  } finally {
+    hideLoader();
+  }
+}
+
+document.getElementById("sendBtn").addEventListener("click", () => {
+  const inp = document.getElementById("textInput");
+  sendText(inp.value);
+  inp.value = "";
+});
+document.getElementById("textInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const inp = e.target;
+    sendText(inp.value);
+    inp.value = "";
+  }
+});
+
+// ── Mic recording ─────────────────────────────────────────────
+const micBtn    = document.getElementById("micBtn");
+const micStatus = document.getElementById("micStatus");
+
+micBtn.addEventListener("click", async () => {
+  if (isRecording) {
+    stopRecording();
+  } else {
+    await startRecording();
+  }
+});
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks   = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = sendAudioBlob;
+    mediaRecorder.start();
+    isRecording         = true;
+    micBtn.classList.add("active");
+    micBtn.innerHTML    = "⏹️";
+    micStatus.textContent = "🔴 Recording… Click again to stop";
+  } catch (err) {
+    alert("Microphone access denied:\n" + err.message);
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    mediaRecorder.stop();
+    mediaRecorder.stream.getTracks().forEach(t => t.stop());
+  }
+  isRecording           = false;
+  micBtn.classList.remove("active");
+  micBtn.innerHTML      = "🎙️";
+  micStatus.textContent = "Processing audio…";
+}
+
+async function sendAudioBlob() {
+  const blob = new Blob(audioChunks, { type: "audio/webm" });
+  const form = new FormData();
+  form.append("file",     blob, "recording.webm");
+  form.append("language", selectedLang);
+
+  showLoader();
+  try {
+    const res = await fetch(URLS.processAudio, {
+      method:  "POST",
+      headers: { "X-CSRFToken": getCsrf() },
+      body:    form,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Server error");
+    micStatus.textContent = "Click the mic and speak";
+    showResponse(data.transcript, data.response_text, data.audio_data);
+  } catch (e) {
+    alert("❌ Audio error: " + e.message);
+    micStatus.textContent = "Click the mic and speak";
+  } finally {
+    hideLoader();
+  }
+}
+
+// ── Quick actions ─────────────────────────────────────────────
+document.querySelectorAll(".qa-tile").forEach(tile => {
+  tile.addEventListener("click", async () => {
+    const action = tile.dataset.action;
+
+    if (action === "weather") {
+      sendText("What is the current weather at my location?");
+
+    } else if (action === "crop") {
+      const crop = prompt("Enter crop name (e.g. wheat, rice, onion, potato):");
+      if (!crop) return;
+      showLoader();
+      try {
+        const data = await apiPost(URLS.cropPrices, { crop, language: selectedLang });
+        showResponse(null, data.text, data.audio_data);
+      } catch(e) { alert("❌ " + e.message); }
+      finally { hideLoader(); }
+
+    } else if (action === "schemes") {
+      const topic = prompt("Enter topic (e.g. irrigation, seeds, crop insurance, PM Kisan):");
+      if (!topic) return;
+      showLoader();
+      try {
+        const data = await apiPost(URLS.govSchemes, { topic, language: selectedLang });
+        showResponse(null, data.text, data.audio_data);
+      } catch(e) { alert("❌ " + e.message); }
+      finally { hideLoader(); }
+
+    } else if (action === "advice") {
+      const q = prompt("Ask your farming question:");
+      if (q) sendText(q);
+    }
+  });
+});
+</script>
+{% endblock %}

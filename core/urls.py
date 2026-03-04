@@ -9,5 +9,5 @@ urlpatterns = [
     path("api/", include("weather.urls")),
     path('learn/', include('learning.urls')),
     path("api/chatbot/", include("guided_chatbot.urls")),
-    
+    path("voice/",       include("voice.urls", namespace="voice")),
 ]

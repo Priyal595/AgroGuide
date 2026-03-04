@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/advisor.css' %}">
 <div class="container" style="padding: 40px 0;">
 
     <h2>Smart Farming Advisor</h2>
@@ -12,16 +13,51 @@
     {% else %}
 
     <!-- Environmental Profile -->
-    <div class="card" style="padding: 20px; margin-top: 20px;">
-        <h4>Environmental Profile</h4>
-        <ul>
-            <li><strong>Temperature:</strong> {{ profile.temperature }} °C</li>
-            <li><strong>Rainfall:</strong> {{ profile.rainfall }} mm</li>
-            <li><strong>Humidity:</strong> {{ profile.humidity }} %</li>
-            <li><strong>Nitrogen:</strong> {{ profile.nitrogen }}</li>
-            <li><strong>pH:</strong> {{ profile.ph }}</li>
-        </ul>
+    <div class="advisor-card">
+    <h4 class="profile-title">ENVIRONMENTAL PROFILE</h4>
+    
+    <div class="metrics-container">
+        <div class="metric-box">
+            <div class="metric-header">
+                <span class="icon">🌡️</span>
+                <span class="label">TEMPERATURE</span>
+            </div>
+            <div class="metric-value">{{ profile.temperature }}<span class="unit">°C</span></div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-header">
+                <span class="icon">🌧️</span>
+                <span class="label">RAINFALL</span>
+            </div>
+            <div class="metric-value">{{ profile.rainfall }}<span class="unit">mm</span></div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-header">
+                <span class="icon">💧</span>
+                <span class="label">HUMIDITY</span>
+            </div>
+            <div class="metric-value">{{ profile.humidity }}<span class="unit">%</span></div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-header">
+                <span class="icon">🍃</span>
+                <span class="label">NITROGEN</span>
+            </div>
+            <div class="metric-value">{{ profile.nitrogen }}</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-header">
+                <span class="icon">🧪</span>
+                <span class="label">SOIL PH</span>
+            </div>
+            <div class="metric-value">{{ profile.ph }}</div>
+        </div>
     </div>
+</div>
     
     {% if weather_data %}
     <div class="card" style="padding: 20px; margin-top: 20px; border-left: 5px solid #2980b9;">
