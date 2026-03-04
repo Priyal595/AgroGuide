@@ -114,6 +114,9 @@
                             <p>Enter your soil and climate data, then click "Get Crop Recommendation" to see results.</p>
                         </div>
                     </div>
+                    <button id="download-pdf" class="btn btn-secondary mt-2">
+                        📄 Download Report
+                    </button>
                 </div>
             </div>
 
@@ -208,27 +211,6 @@
 
         </div>
 
-        <div class="history-card" style="margin-top: 24px;">
-            <h2 class="history-title">
-                <span>📜</span> Prediction History
-                <button id="reset-history-btn" class="reset-btn">Clear All</button>
-            </h2>
-            <div class="table-wrapper">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Top Recommendation</th>
-                            <th>Confidence</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-body">
-                        <tr><td colspan="4" class="empty-history">Loading prediction history...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
         <div class="history-card" style="margin-top: 24px;">
             <h2 class="history-title">📊 My Crop Insights</h2>
@@ -297,7 +279,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<<<<<<< HEAD
 <script src="{% static 'js/slider.js' %}" defer></script>
 <script src="{% static 'js/charts.js' %}" defer></script>
 <script src="{% static 'js/dashboard.js' %}" defer></script>

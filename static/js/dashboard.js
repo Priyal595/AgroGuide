@@ -10,10 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-console.log("Dashboard JS Loaded");
-initializeDashboard();
-
-
 document.addEventListener("DOMContentLoaded", () => {
     loadWeather();
 });
@@ -158,6 +154,7 @@ function handleFormSubmit(e) {
    DISPLAY PREDICTION RESULTS
    =============================== */
 function displayResults(data) {
+  window.lastPredictionData = data;
   const container = document.getElementById("results-container");
   if (!container) return;
 
@@ -232,6 +229,7 @@ function displayResults(data) {
   }
 
   container.innerHTML = html;
+  
 }
 
 
@@ -597,3 +595,78 @@ function prevNews() {
 
   updateNewsSlider();
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("download-pdf");
+
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+
+    if (!window.lastPredictionData) {
+      alert("Generate recommendations first.");
+      return;
+    }
+
+    // Capture charts as images
+    const featureChartCanvas = document.getElementById("feature-importance-chart");
+    const freqChartCanvas = document.getElementById("cropFrequencyChart");
+
+    let featureChartImage = null;
+    let frequencyChartImage = null;
+
+    if (featureChartCanvas) {
+      featureChartImage = featureChartCanvas.toDataURL("image/png");
+    }
+
+    if (freqChartCanvas) {
+      frequencyChartImage = freqChartCanvas.toDataURL("image/png");
+    }
+
+    const data = {
+      inputs: {
+        nitrogen: document.getElementById("nitrogen").value,
+        phosphorus: document.getElementById("phosphorus").value,
+        potassium: document.getElementById("potassium").value,
+        temperature: document.getElementById("temperature").value,
+        humidity: document.getElementById("humidity").value,
+        rainfall: document.getElementById("rainfall").value,
+        ph: document.getElementById("ph").value
+      },
+
+      predictions: window.lastPredictionData.predictions,
+      explanation: window.lastPredictionData.explanation,
+
+      feature_chart: featureChartImage,
+      frequency_chart: frequencyChartImage
+    };
+
+    const response = await fetch("/api/download-report/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCSRFToken()
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error(text);
+      alert("PDF generation failed.");
+      return;
+    }
+
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "crop_report.pdf";
+    a.click();
+
+  });
+
+});
