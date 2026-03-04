@@ -1,0 +1,19 @@
+# ════════════════════════════════════════════════════════════
+#  ADD THESE LINES TO YOUR  AgroGuide/.env  FILE
+# ════════════════════════════════════════════════════════════
+
+# ── Azure OpenAI ─────────────────────────────────────────────
+# Get from: portal.azure.com → Azure OpenAI resource → Keys and Endpoint
+AZURE_OPENAI_ENDPOINT=https://YOUR-RESOURCE-NAME.openai.azure.com/
+AZURE_OPENAI_API_KEY=PASTE_YOUR_AZURE_OPENAI_KEY_HERE
+AZURE_OPENAI_DEPLOYMENT=gpt35
+AZURE_OPENAI_API_VERSION=2024-12-01-preview
+
+# ── Azure Speech ──────────────────────────────────────────────
+# Get from: portal.azure.com → Cognitive Services → Speech resource → Keys
+AZURE_SPEECH_KEY=PASTE_YOUR_SPEECH_KEY_HERE
+AZURE_SPEECH_REGION=eastus
+
+# ── OpenWeatherMap ────────────────────────────────────────────
+# Get from: openweathermap.org → My API Keys
+OPENWEATHER_API_KEY=PASTE_YOUR_WEATHER_KEY_HERE
