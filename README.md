@@ -1,169 +1,105 @@
-# AgroGuide
-Crop Recommendation System
+# AgroGuide 🌱  
+### Smart AI-Powered Crop Recommendation Platform
 
-AgroGuide is a web-based application that recommends the most suitable crops based on soil nutrients and climatic conditions using machine learning.
+AgroGuide is an AI-powered smart farming advisory platform that helps farmers choose the most suitable crops based on soil nutrients and environmental conditions.
 
----
-
-## Project Structure
-
-![Project Folder Structure](images/folder_structure.png)
-
-## Current Project Status
-
-### Completed
-- Frontend UI (All pages)
-- Authentication flow (Register, Login, Logout)
-- Email verification (console-based for development)
-- Dashboard UI with sliders, charts, and result sections
-- Prediction API endpoint (dummy / rule-based response)
-- Prediction data storage in database
-- API integration with dashboard
-- Prediction history API (data fetching works)
-
-### In Progress
-- Dashboard history UI rendering (backend data already available)
-- ML model integration with prediction API
-- Improving explanation logic based on ML output
-
-### Pending
-- Replace dummy logic with trained ML model
-- Real email SMTP setup (production)
-- Feature importance from actual ML model
-- Performance tuning & validations
+The system combines machine learning, real-time weather data, agricultural knowledge, and AI assistants to provide intelligent farming guidance.
 
 ---
 
-## Frontend Status (COMPLETED – DO NOT MODIFY)
+# Key Features
 
-The frontend is fully implemented and stable.
+## ML-Based Crop Recommendation
+AgroGuide predicts the most suitable crops using:
 
-### Pages
-- Landing Page
-- Login Page
-- Register Page
-- Email Verification Status Page (verify_status.html)
-- Dashboard (Sliders, Charts, Results, History Section)
+Soil Parameters
+- Nitrogen
+- Phosphorus
+- Potassium
+- pH
 
-### JavaScript Logic
-- slider.js – Handles sliders & input values
-- dashboard.js – Form submission, API calls & results rendering
-- charts.js – Chart.js visualizations
+Environmental Factors
+- Temperature
+- Humidity
+- Rainfall
 
-Frontend expects strict backend response formats.
-
----
-
-## Backend Responsibilities 🚀
-
-Backend developers should focus ONLY on the following areas:
+The system returns the **top 3 recommended crops** along with confidence scores.
 
 ---
 
-### 1. API Endpoint: Crop Prediction
-
-URL  
-POST /api/predict/
-
-Current Status:
-- API exists and works
-- Data is stored in DB
-- Dummy / placeholder prediction logic is used
-
-To Do:
-- Integrate ML model
-- Replace dummy predictions with real output
-
-Expected JSON Request
-{
-  "nitrogen": 90,
-  "phosphorus": 42,
-  "potassium": 43,
-  "temperature": 25.5,
-  "humidity": 80,
-  "rainfall": 200,
-  "ph": 6.5
-}
-
-Expected JSON Response
-{
-  "predictions": [
-    { "name": "Rice", "score": 0.89 },
-    { "name": "Wheat", "score": 0.76 },
-    { "name": "Maize", "score": 0.68 }
-  ],
-  "explanation": "Rice is recommended due to high nitrogen and adequate rainfall.",
-  "feature_importance": {
-    "labels": ["Nitrogen", "Phosphorus", "Potassium", "Temperature", "Humidity", "Rainfall", "pH"],
-    "values": [0.25, 0.18, 0.15, 0.14, 0.12, 0.10, 0.06]
-  }
-}
-
-IMPORTANT
-- score must be between 0 and 1
-- feature importance values must sum to 1
-- response structure must not change
+## Explainable AI
+AgroGuide provides **feature importance visualization** showing how each environmental parameter affects the prediction.
 
 ---
 
-### 2. Prediction History
+## Smart Farming Advisor
+The platform suggests strategies to improve farming practices such as:
 
-Current Status:
-- Prediction data is saved per user
-- History API endpoint works
-
-To Do:
-- Ensure consistent data formatting
-- Improve ordering & pagination if needed
+- Precision fertilization
+- Rainwater harvesting
+- Mulching techniques
+- Soil monitoring strategies
 
 ---
 
-### 3. URL Names (DO NOT CHANGE)
+## Real-Time Weather Integration
+Weather API automatically fetches environmental data such as:
 
-These URL names are already used in templates and JavaScript.
+- Temperature
+- Humidity
+- Weather conditions
 
-| URL Name | Purpose |
-| landing | Home page |
-| login | Login page |
-| register | Registration page |
-| dashboard | User dashboard |
-| logout | Logout |
-| verify_email | Email verification |
-
-Changing these WILL break the frontend.
+This improves prediction accuracy by using real-time climate data.
 
 ---
 
-### 4. Email Verification (Development Setup)
+## Agriculture News Feed
+AgroGuide integrates a News API to display the latest updates in agriculture including:
 
-Current Setup:
-- Console email backend is enabled
-- Verification email is printed in terminal
-
-Verification Flow:
-1. User registers
-2. Verification link is printed in terminal
-3. User copies the link
-4. Opens it in browser
-5. Account gets activated
-
-This is intentional for development/testing.
-
-Production To Do:
-- Configure SMTP
-- Move email credentials to .env
-- Switch email backend
+- Agricultural technology
+- Crop innovations
+- Government farming policies
+- Market trends
 
 ---
 
-### 5. Authentication
+## Smart Chatbot
+A built-in AI chatbot helps farmers by answering queries related to:
 
-- Django default User model is used
-- Email-based login (mapped internally to username)
-- User must verify email before accessing dashboard
-- Login redirects to dashboard on success
+- Soil nutrients
+- Crop cultivation techniques
+- Agricultural practices
 
 ---
+
+## Multilingual Voice Assistant
+Farmers can interact with the system using voice or text queries, currently available in 5 different language.
+
+The voice assistant provides responses for:
+
+- Government schemes
+- Crop information (40+ crops)
+- Farming methods and techniques
+
+---
+
+## User Dashboard
+The dashboard provides an interactive interface including:
+
+- Soil input sliders
+- Crop prediction results
+- Feature importance charts
+- Prediction history
+
+# Prediction Workflow
+
+1. User enters soil parameters (N, P, K, pH).  
+2. Weather API fetches climate data automatically.  
+3. Backend validates input data.  
+4. ML model generates crop prediction.  
+5. Top recommended crops are displayed.  
+6. Feature importance explains prediction.
+
 
 ## Setup Instructions (Development)
 
@@ -190,14 +126,9 @@ python manage.py runserver
 ```
 ---
 
-## Notes for Contributors
-
-- Frontend is complete – do not change without discussion
-- Backend APIs must follow exact response formats
-- ML integration is the primary remaining task
-- Email is console-based by design for now
-
 ---
+
+
 
 ## Maintained By
 AgroGuide Team 🌱
